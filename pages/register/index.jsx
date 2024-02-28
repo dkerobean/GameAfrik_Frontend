@@ -4,12 +4,14 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Meta from "../../components/Meta";
+import { useRouter } from "next/router";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [name, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const router = useRouter();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -41,16 +43,21 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/register/`,
+        `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/user/register/`,
         {
           email,
           name,
           password,
+          confirm_password: confirmPassword
         }
       );
       // Handle successful registration
-      console.log(response.data);
-      toast.success("Registration successful");
+    console.log(response.data);
+    toast.success("Registration successful");
+    // Redirect to login page after a delay
+    setTimeout(() => {
+      router.push("/login");
+    }, 1000); // 3 seconds delay
     } catch (error) {
       // Handle registration error
       console.error("Registration error:", error);
@@ -143,7 +150,7 @@ const Register = () => {
                   </label>
                   <input
                     type="password"
-                    id="profile-confirm-password"
+                    id="confirm_password"
                     value={confirmPassword}
                     onChange={handleConfirmPasswordChange}
                     className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 hover:ring-2 dark:text-white px-3"

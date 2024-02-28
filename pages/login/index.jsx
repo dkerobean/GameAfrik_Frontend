@@ -4,10 +4,12 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Meta from "../../components/Meta";
+import { useRouter } from "next/router";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -26,7 +28,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/login/`,
+        `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/user/login/`,
         {
           email,
           password,
@@ -35,6 +37,10 @@ const Login = () => {
       // Handle successful login
       console.log(response.data);
       toast.success("Login successful");
+      // Redirect to login page after a delay
+    setTimeout(() => {
+      router.push("/");
+    }, 1000); //
     } catch (error) {
       // Handle login error
       console.error("Login error:", error);
