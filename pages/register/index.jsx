@@ -98,6 +98,12 @@ const Register = () => {
               <h1 className="text-jacarta-700 font-display mb-6 text-4xl dark:text-white">
                 Register
               </h1>
+              <p className="dark:text-jacarta-300 mb-10 text-lg leading-normal">
+                Choose one of available wallet providers or create a new wallet.
+                <a href="#" className="text-accent">
+                  What is a wallet?
+                </a>
+              </p>
               <form onSubmit={handleSubmit}>
                 <div className="mb-6">
                   <label className="font-display text-jacarta-700 mb-1 block text-sm dark:text-white">
@@ -165,6 +171,12 @@ const Register = () => {
                 >
                   Register
                 </button>
+                <p className="dark:text-jacarta-300 mb-10 text-lg leading-normal mt-5">
+                Already have an account ?
+                <a href="/login" className="text-accent ml-2">
+                  Login
+                </a>
+              </p>
               </form>
             </div>
           </div>

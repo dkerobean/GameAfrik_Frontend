@@ -123,6 +123,12 @@ const Login = () => {
                 >
                   Login
                 </button>
+                <p className="dark:text-jacarta-300 mb-10 text-lg leading-normal mt-5">
+                Dont have an account yet ?
+                <a href="/register" className="text-accent ml-2">
+                  Register
+                </a>
+              </p>
               </form>
             </div>
           </div>
