@@ -6,19 +6,25 @@ import {
   NewseLatter,
   Feature_collections,
   Partners,
+  Browse_category,
 } from "../../components/component";
 import Meta from "../../components/Meta";
+import Process from "../../components/blog/process";
+import Download from "../../components/blog/download";
 
 const Home_2 = () => {
   return (
     <>
       <Meta title="Home 2" />
       <Hero_2 />
+      <Browse_category />
       <Top_collection />
+      <Process />
       <Auctions_categories />
       <NewseLatter />
       <Feature_collections />
       <Partners />
+      <Download />
     </>
   );
 };
