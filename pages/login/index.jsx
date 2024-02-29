@@ -34,13 +34,20 @@ const Login = () => {
           password,
         }
       );
+      // Extract the access key from the response
+      const accessKey = response.data.accessKey;
+
+      // Store the access key in localStorage
+      localStorage.setItem('accessKey', accessKey);
+
       // Handle successful login
       console.log(response.data);
       toast.success("Login successful");
+
       // Redirect to login page after a delay
     setTimeout(() => {
       router.push("/");
-    }, 1000); //
+    }, 1000);
     } catch (error) {
       // Handle login error
       console.error("Login error:", error);

@@ -5,6 +5,9 @@ import Logo from "./../../public/images/logo.png";
 import WhiteLogo from "./../../public/images/logo_white.png";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/router";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 import {
   isChildrenPageActive,
   isParentPageActive,
@@ -15,6 +18,50 @@ import WalletButton from "../wallet-btn/WalletButton";
 export default function Header01() {
   const [toggle, setToggle] = useState(false);
   const [isCollapse, setCollapse] = useState(null);
+
+  const router = useRouter();
+
+  const [accessKey, setAccessKey] = useState("");
+
+  useEffect(() => {
+    // Access localStorage only on the client-side
+    const key = localStorage.getItem("accessKey");
+    if (key) {
+      setAccessKey(key);
+    }
+  }, []); // Run once on component mount
+
+
+  const handleLogout = async () => {
+  try {
+    const accessKey = localStorage.getItem("accessKey");
+    if (!accessKey) {
+      toast.warning("You are not logged in");
+      return;
+    }
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/user/logout/`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessKey}`
+        }
+      }
+    );
+
+    // Handle successful logout
+    console.log(response.data);
+    toast.success("Logout successful");
+    setTimeout(() => {
+      router.push("/");
+    }, 1000); // 3 seconds delay
+  } catch (error) {
+    // Handle logout error
+    console.error("Logout error:", error);
+    toast.error("Error logging out. Please try again.");
+  }
+};
 
   // window resize
   useEffect(() => {
@@ -756,7 +803,34 @@ export default function Header01() {
                       </span>
                     </a>
                   </Link>
-                  <Link href="/login">
+                  <>
+                    {accessKey ? (
+
+                      <button
+                      onClick={handleLogout} className="dark:hover:bg-jacarta-600 hover:text-accent focus:text-accent hover:bg-jacarta-50 flex items-center space-x-2 rounded-xl px-5 py-2 transition-colors">
+                        Logout
+                      </button>
+                    ) : (
+                      <Link href="/login">
+                        <a className="dark:hover:bg-jacarta-600 hover:text-accent focus:text-accent hover:bg-jacarta-50 flex items-center space-x-2 rounded-xl px-5 py-2 transition-colors">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width={24}
+                            height={24}
+                            className="fill-jacarta-700 h-4 w-4 transition-colors dark:fill-white"
+                          >
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zM7 11V8l-5 4 5 4v-3h8v-2H7z" />
+                          </svg>
+                          <span className="font-display text-jacarta-700 mt-1 text-sm dark:text-white">
+                            Log in
+                          </span>
+                        </a>
+                      </Link>
+                    )}
+                </>
+                  {/* <Link href="/login">
                     <a className="dark:hover:bg-jacarta-600 hover:text-accent focus:text-accent hover:bg-jacarta-50 flex items-center space-x-2 rounded-xl px-5 py-2 transition-colors">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -772,7 +846,7 @@ export default function Header01() {
                         Log in
                       </span>
                     </a>
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
               <DarkMode />
