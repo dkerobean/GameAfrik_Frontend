@@ -40,26 +40,15 @@ export default function Header01() {
       return;
     }
 
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/user/logout/`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${accessKey}`
-        }
-      }
-    );
+    localStorage.removeItem("accessKey");
 
-    // Handle successful logout
-    console.log(response.data);
     toast.success("Logout successful");
+    console.log("logout")
     setTimeout(() => {
-      router.push("/");
-    }, 1000); // 3 seconds delay
+      router.push("/login");
+    }, 1000);
   } catch (error) {
-    // Handle logout error
-    console.error("Logout error:", error);
-    toast.error("Error logging out. Please try again.");
+   console.log("error", error);
   }
 };
 
@@ -1277,6 +1266,7 @@ export default function Header01() {
             </a>
           </div>
         </div>
+        <ToastContainer />
         {/* mt-10 w-full lg:hidden */}
       </div>
       {/* End mobile menu and it's other materials */}
