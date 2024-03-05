@@ -18,7 +18,7 @@ const Browse_category = ({ bgWhite }) => {
           </picture>
         )}
         <HeadLine
-          text="Browse by category"
+          text="Browse by games"
           classes="font-display text-jacarta-700 mb-8 text-center text-3xl dark:text-white"
         />
 
