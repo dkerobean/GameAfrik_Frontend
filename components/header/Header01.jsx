@@ -24,8 +24,7 @@ export default function Header01() {
   const [accessKey, setAccessKey] = useState("");
 
   useEffect(() => {
-    // Access localStorage only on the client-side
-    const key = localStorage.getItem("accessKey");
+    const key = localStorage.getItem("accessToken");
     if (key) {
       setAccessKey(key);
     }
@@ -34,13 +33,13 @@ export default function Header01() {
 
   const handleLogout = async () => {
   try {
-    const accessKey = localStorage.getItem("accessKey");
+    const accessKey = localStorage.getItem("accessToken");
     if (!accessKey) {
       toast.warning("You are not logged in");
       return;
     }
 
-    localStorage.removeItem("accessKey");
+    localStorage.removeItem("accessToken");
 
     toast.success("Logout successful");
     console.log("logout")

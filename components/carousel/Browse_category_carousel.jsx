@@ -48,7 +48,7 @@ const BrowseCategoryCarousel = () => {
                         spaceBetween: 30,
                     },
                 }}
-                className="card-slider-4-columns py-5" // Removed unnecessary class notation
+                className="card-slider-4-columns py-5"
                 style={{ transform: 'scaleX(1.2)' }}
             >
                 {games.map((game) => (

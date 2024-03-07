@@ -11,6 +11,28 @@ const Edit_user = () => {
 	const [coverePhoto, setCoverePhoto] = useState();
 	const [preview, setPreview] = useState();
 	const [coverPreview, setCoverPreview] = useState();
+	const [profileData, setProfileData] = useState();
+
+	const BaseUrl = process.env.NEXT_PUBLIC_APP_BACKEND_URL;
+
+
+	useEffect(() => {
+        const fetchProfileData = async () => {
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await axios.get(`${BaseUrl}/api/user/profile/`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setProfileData(response.data);
+            } catch (error) {
+                console.error('Failed to fetch user profile:', error);
+            }
+        };
+
+        fetchProfileData();
+    }, []);
 
 	const handleProfilePhoto = (e) => {
 		const file = e.target.files[0];
@@ -56,7 +78,7 @@ const Edit_user = () => {
 
 	return (
 		<div>
-			<Meta title="Profile || Xhibiter | NFT Marketplace Next.js Template" />
+			<Meta title="Profile || GamingAfrik" />
 			<div className="pt-[5.5rem] lg:pt-24">
 				{/* <!-- Banner --> */}
 				<div className="relative">

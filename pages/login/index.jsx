@@ -34,11 +34,12 @@ const Login = () => {
           password,
         }
       );
+
       // Extract the access key from the response
-      const accessKey = response.data.accessKey;
+      const accessKey = response.data.access;
 
       // Store the access key in localStorage
-      localStorage.setItem('accessKey', accessKey);
+      localStorage.setItem('accessToken', accessKey);
 
       // Handle successful login
       console.log(response.data);
