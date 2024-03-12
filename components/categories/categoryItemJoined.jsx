@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
-import Likes from "../likes";
-import Auctions_dropdown from "../dropdown/Auctions_dropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { buyModalShow } from "../../redux/counterSlice";
+import { toast } from "react-toastify"; // Import react-toastify for displaying toast messages
 
 const CategoryItem = () => {
   const [tournaments, setTournaments] = useState([]);
@@ -14,41 +12,41 @@ const CategoryItem = () => {
   const backendUrl = process.env.NEXT_PUBLIC_APP_BACKEND_URL;
   const dispatch = useDispatch();
 
+  const fetchTournaments = async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/tournaments/`);
+      if (response.ok) {
+        const data = await response.json();
+        setTournaments(data);
+      } else {
+        throw new Error("Failed to fetch tournaments");
+      }
+    } catch (error) {
+      console.error("Error fetching tournaments:", error);
+    }
+  };
+
+  const fetchJoinedTournaments = async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/tournaments/joined/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setJoinedTournaments(data);
+      } else {
+        throw new Error("Failed to fetch joined tournaments");
+      }
+    } catch (error) {
+      console.error("Error fetching joined tournaments:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchTournaments = async () => {
-      try {
-        const response = await fetch(`${backendUrl}/api/tournaments/`);
-        if (response.ok) {
-          const data = await response.json();
-          setTournaments(data);
-        } else {
-          throw new Error('Failed to fetch tournaments');
-        }
-      } catch (error) {
-        console.error('Error fetching tournaments:', error);
-      }
-    };
-
-    const fetchJoinedTournaments = async () => {
-      try {
-        const response = await fetch(`${backendUrl}/api/tournaments/joined/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setJoinedTournaments(data);
-        } else {
-          throw new Error('Failed to fetch joined tournaments');
-        }
-      } catch (error) {
-        console.error('Error fetching joined tournaments:', error);
-      }
-    };
-
     fetchTournaments();
     fetchJoinedTournaments();
   }, []);
@@ -66,17 +64,17 @@ const CategoryItem = () => {
         // Refresh joined tournaments list
         fetchJoinedTournaments();
       } else {
-        throw new Error('Failed to join tournament');
+        throw new Error("Failed to join tournament");
       }
     } catch (error) {
-      console.error('Error joining tournament:', error);
+      console.error("Error joining tournament:", error);
     }
   };
 
-  const handleLeaveTournament = async (tournamentId) => {
+  const handleLeaveTournament = async (tournamentId, tournamentName) => {
     try {
       const response = await fetch(`${backendUrl}/api/tournaments/leave/${tournamentId}/`, {
-        method: "POST",
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -85,17 +83,18 @@ const CategoryItem = () => {
       if (response.ok) {
         // Refresh joined tournaments list
         fetchJoinedTournaments();
+        toast.success(`Left tournament "${tournamentName}" successfully`);
       } else {
-        throw new Error('Failed to leave tournament');
+        throw new Error("Failed to leave tournament");
       }
     } catch (error) {
-      console.error('Error leaving tournament:', error);
+      console.error("Error leaving tournament:", error);
     }
   };
 
   return (
     <div className="grid grid-cols-1 gap-[1.875rem] md:grid-cols-2 lg:grid-cols-4">
-      {tournaments.map((tournament) => {
+      {joinedTournaments.map((tournament) => {
         const {
           id,
           name,
@@ -109,7 +108,7 @@ const CategoryItem = () => {
           end_date,
           status,
           host,
-          participants
+          participants,
         } = tournament;
 
         // Function to construct image URLs with the backend URL
@@ -139,7 +138,10 @@ const CategoryItem = () => {
                       />
                     </Tippy>
                     {participants.map((participant, index) => (
-                      <Tippy key={index} content={<span>Participant: {participant.username}</span>}>
+                      <Tippy
+                        key={index}
+                        content={<span>Participant: {participant.username}</span>}
+                      >
                         <img
                           key={index}
                           src={getImageUrl(participant.avatar)} // Use getImageUrl function to get avatar URL
@@ -168,7 +170,7 @@ const CategoryItem = () => {
                 {isJoined ? (
                   <button
                     className="text-accent font-display text-sm font-semibold"
-                    onClick={() => handleLeaveTournament(tournament.uuid)}
+                    onClick={() => handleLeaveTournament(tournament.uuid, tournament.name)}
                   >
                     Leave
                   </button>
