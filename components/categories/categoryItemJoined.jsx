@@ -10,6 +10,7 @@ import { buyModalShow } from "../../redux/counterSlice";
 
 const CategoryItem = () => {
   const [tournaments, setTournaments] = useState([]);
+  const [joinedTournaments, setJoinedTournaments] = useState([]);
   const backendUrl = process.env.NEXT_PUBLIC_APP_BACKEND_URL;
   const dispatch = useDispatch();
 
@@ -28,8 +29,69 @@ const CategoryItem = () => {
       }
     };
 
+    const fetchJoinedTournaments = async () => {
+      try {
+        const response = await fetch(`${backendUrl}/api/tournaments/joined/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setJoinedTournaments(data);
+        } else {
+          throw new Error('Failed to fetch joined tournaments');
+        }
+      } catch (error) {
+        console.error('Error fetching joined tournaments:', error);
+      }
+    };
+
     fetchTournaments();
+    fetchJoinedTournaments();
   }, []);
+
+  const handleJoinTournament = async (tournamentId) => {
+    try {
+      const response = await fetch(`${backendUrl}/api/tournaments/join/${tournamentId}/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      if (response.ok) {
+        // Refresh joined tournaments list
+        fetchJoinedTournaments();
+      } else {
+        throw new Error('Failed to join tournament');
+      }
+    } catch (error) {
+      console.error('Error joining tournament:', error);
+    }
+  };
+
+  const handleLeaveTournament = async (tournamentId) => {
+    try {
+      const response = await fetch(`${backendUrl}/api/tournaments/leave/${tournamentId}/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      if (response.ok) {
+        // Refresh joined tournaments list
+        fetchJoinedTournaments();
+      } else {
+        throw new Error('Failed to leave tournament');
+      }
+    } catch (error) {
+      console.error('Error leaving tournament:', error);
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 gap-[1.875rem] md:grid-cols-2 lg:grid-cols-4">
@@ -52,6 +114,9 @@ const CategoryItem = () => {
 
         // Function to construct image URLs with the backend URL
         const getImageUrl = (imageUrl) => `${backendUrl}${imageUrl}`;
+
+        // Check if the user has joined this tournament
+        const isJoined = joinedTournaments.some(({ uuid }) => uuid === tournament.uuid);
 
         return (
           <article key={id}>
@@ -100,12 +165,21 @@ const CategoryItem = () => {
                 </span>
               </div>
               <div className="mt-8 flex items-center justify-between">
-                <button
-                  className="text-accent font-display text-sm font-semibold"
-                  onClick={() => dispatch(buyModalShow())}
-                >
-                  Register
-                </button>
+                {isJoined ? (
+                  <button
+                    className="text-accent font-display text-sm font-semibold"
+                    onClick={() => handleLeaveTournament(tournament.uuid)}
+                  >
+                    Leave
+                  </button>
+                ) : (
+                  <button
+                    className="text-accent font-display text-sm font-semibold"
+                    onClick={() => handleJoinTournament(tournament.uuid)}
+                  >
+                    Join
+                  </button>
+                )}
               </div>
             </div>
           </article>

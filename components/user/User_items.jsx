@@ -3,6 +3,7 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Activity_item from "../collectrions/Activity_item";
 import Image from "next/image";
 import Trending_categories_items from "../categories/trending_categories_items";
+import Trending_categories_items_joined from "../categories/trending_categories_items_joined";
 import Explore_collection_item from "../collectrions/explore_collection_item";
 
 const User_items = () => {
@@ -86,7 +87,7 @@ const User_items = () => {
             <TabPanel>
               <div>
                 {/* <!-- Filter --> */}
-                <Trending_categories_items />
+                <Trending_categories_items_joined />
               </div>
             </TabPanel>
             <TabPanel>
