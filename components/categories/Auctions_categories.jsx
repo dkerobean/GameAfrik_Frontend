@@ -27,7 +27,7 @@ const Auctions_categories = () => {
         <div className="container">
           <HeadLine
             image="https://cdn.jsdelivr.net/npm/emoji-datasource-apple@7.0.2/img/apple/64/2764-fe0f.png"
-            text="Live Auctions"
+            text="All Tournaments"
             classes="font-display text-jacarta-700 mb-8 text-center text-3xl dark:text-white"
           />
           <div className="grid grid-cols-1 gap-[1.875rem] md:grid-cols-2 lg:grid-cols-4">
@@ -148,7 +148,7 @@ const Auctions_categories = () => {
                         className="text-accent font-display text-sm font-semibold"
                         onClick={() => dispatch(bidsModalShow())}
                       >
-                        Place bid
+                        Join
                       </button>
 
                       <Likes

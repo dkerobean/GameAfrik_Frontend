@@ -10,17 +10,17 @@ const User_items = () => {
   const tabItem = [
     {
       id: 1,
-      text: "on sale",
+      text: "All",
       icon: "on-sale",
     },
     {
       id: 2,
-      text: "owned",
+      text: "Joined",
       icon: "owned",
     },
     {
       id: 3,
-      text: "created(20)",
+      text: "Hosted",
       icon: "created",
     },
     {

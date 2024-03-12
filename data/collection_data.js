@@ -1,7 +1,7 @@
 const collection_data = [
 	{
 		id: 1,
-		title: 'NFT Funny Cat',
+		title: 'NFT Funny Catii',
 		image: '/images/avatars/avatar_1.jpg',
 		icon: true,
 		amount: '7,080.95',
@@ -148,7 +148,7 @@ const collection_data = [
 const collection_item_data = [
 	{
 		id: 'avatar_1',
-		title: 'NFT Funny Cat',
+		title: 'NFT Funny Catii',
 		image: '/images/avatars/avatar_1.jpg',
 		icon: true,
 		creator: '051_Hart',
