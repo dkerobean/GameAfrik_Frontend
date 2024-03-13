@@ -7,29 +7,57 @@ import Likes from "../likes";
 import Auctions_dropdown from "../dropdown/Auctions_dropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { buyModalShow } from "../../redux/counterSlice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CategoryItem = () => {
   const [tournaments, setTournaments] = useState([]);
   const backendUrl = process.env.NEXT_PUBLIC_APP_BACKEND_URL;
   const dispatch = useDispatch();
+  const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
     const fetchTournaments = async () => {
       try {
-        const response = await fetch(`${backendUrl}/api/tournaments/`);
+        const response = await fetch(`${backendUrl}/api/tournaments/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           setTournaments(data);
         } else {
-          throw new Error('Failed to fetch tournaments');
+          throw new Error("Failed to fetch tournaments");
         }
       } catch (error) {
-        console.error('Error fetching tournaments:', error);
+        console.error("Error fetching tournaments:", error);
       }
     };
 
     fetchTournaments();
-  }, []);
+  }, [accessToken]);
+
+  const handleRegister = async (tournamentId) => {
+    try {
+      const response = await fetch(`${backendUrl}/api/tournament/join/${tournamentId}/`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tournamentId }),
+      });
+      if (response.ok) {
+        toast.success("Successfully registered for the tournament!");
+      } else {
+        throw new Error("Failed to register for the tournament");
+      }
+    } catch (error) {
+      console.error("Error registering for the tournament:", error);
+      toast.error("Failed to register for the tournament");
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 gap-[1.875rem] md:grid-cols-2 lg:grid-cols-4">
@@ -47,7 +75,8 @@ const CategoryItem = () => {
           end_date,
           status,
           host,
-          participants
+          participants,
+          uuid,
         } = tournament;
 
         // Function to construct image URLs with the backend URL
@@ -74,7 +103,10 @@ const CategoryItem = () => {
                       />
                     </Tippy>
                     {participants.map((participant, index) => (
-                      <Tippy key={index} content={<span>Participant: {participant.username}</span>}>
+                      <Tippy
+                        key={index}
+                        content={<span>Participant: {participant.username}</span>}
+                      >
                         <img
                           key={index}
                           src={getImageUrl(participant.avatar)} // Use getImageUrl function to get avatar URL
@@ -102,7 +134,7 @@ const CategoryItem = () => {
               <div className="mt-8 flex items-center justify-between">
                 <button
                   className="text-accent font-display text-sm font-semibold"
-                  onClick={() => dispatch(buyModalShow())}
+                  onClick={() => handleRegister(uuid)}
                 >
                   Register
                 </button>
@@ -111,8 +143,10 @@ const CategoryItem = () => {
           </article>
         );
       })}
+      <ToastContainer />
     </div>
   );
 };
 
 export default CategoryItem;
+

@@ -4,7 +4,8 @@ import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import { useDispatch, useSelector } from "react-redux";
 import { buyModalShow } from "../../redux/counterSlice";
-import { toast } from "react-toastify"; // Import react-toastify for displaying toast messages
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CategoryItem = () => {
   const [tournaments, setTournaments] = useState([]);
@@ -73,7 +74,7 @@ const CategoryItem = () => {
 
   const handleLeaveTournament = async (tournamentId, tournamentName) => {
     try {
-      const response = await fetch(`${backendUrl}/api/tournaments/leave/${tournamentId}/`, {
+      const response = await fetch(`${backendUrl}/api/tournament/leave/${tournamentId}/`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -81,7 +82,6 @@ const CategoryItem = () => {
         },
       });
       if (response.ok) {
-        // Refresh joined tournaments list
         fetchJoinedTournaments();
         toast.success(`Left tournament "${tournamentName}" successfully`);
       } else {
@@ -187,6 +187,7 @@ const CategoryItem = () => {
           </article>
         );
       })}
+      <ToastContainer />
     </div>
   );
 };
