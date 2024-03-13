@@ -5,7 +5,7 @@ import SocialDropdown from "../../components/dropdown/Social_dropdown";
 import AuctionsDropdown from "../../components/dropdown/Auctions_dropdown";
 import UserItems from "../../components/user/User_items";
 import Tippy from "@tippyjs/react";
-import "tippy.js/dist/tippy.css"; // optional
+import "tippy.js/dist/tippy.css";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Meta from "../../components/Meta";
 import axios from "axios";

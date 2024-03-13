@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { tranding_category_filter } from "../../data/categories_data";
-import CategoryItem from "./categoryItem";
+import CategoryItem from "./categoryItemJoined";
 import { trendingCategoryData } from "../../data/categories_data";
 import Tippy from "@tippyjs/react";
 import Recently_added_dropdown from "../dropdown/recently_added_dropdown";
@@ -104,7 +104,7 @@ const Trending_categories_items = () => {
           })}
         </ul>
         {/* dropdown */}
-        {/* <Recently_added_dropdown data={sortText} dropdownFor="recently_added" /> */}
+        <Recently_added_dropdown data={sortText} dropdownFor="recently_added" />
       </div>
 
       {/* <!-- Grid --> */}
