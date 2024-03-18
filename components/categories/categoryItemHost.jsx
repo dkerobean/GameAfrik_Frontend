@@ -29,7 +29,7 @@ const CategoryItem = () => {
 
   const fetchJoinedTournaments = async () => {
     try {
-      const response = await fetch(`${backendUrl}/api/tournaments/joined/`, {
+      const response = await fetch(`${backendUrl}/api/tournaments/hosted/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
