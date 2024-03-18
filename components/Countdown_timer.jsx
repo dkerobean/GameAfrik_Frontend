@@ -8,7 +8,7 @@ const Completionist = () => {
         data-countdown="2022-05-14T10:45:30"
         data-expired="This auction has ended"
       >
-        This auction has ended
+        This Tournament has ended
       </span>
     </div>
   );

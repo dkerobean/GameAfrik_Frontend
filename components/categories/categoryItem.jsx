@@ -7,8 +7,10 @@ import Likes from "../likes";
 import Auctions_dropdown from "../dropdown/Auctions_dropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { buyModalShow } from "../../redux/counterSlice";
+import { bidsModalShow } from "../../redux/counterSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Countdown_timer from "../Countdown_timer";
 
 const CategoryItem = () => {
   const [tournaments, setTournaments] = useState([]);
@@ -82,6 +84,15 @@ const CategoryItem = () => {
         // Function to construct image URLs with the backend URL
         const getImageUrl = (imageUrl) => `${backendUrl}${imageUrl}`;
 
+        // Calculate the countdown time based on the start_date
+        const currentTime = new Date().getTime();
+        const startTime = new Date(start_date).getTime();
+        const countdownTime = startTime - currentTime;
+
+        // Calculate the total number of participants
+        const totalParticipants = participants.length;
+
+
         return (
           <article key={id}>
             <div className="dark:bg-jacarta-700 dark:border-jacarta-700 border-jacarta-100 rounded-2.5xl block border bg-white p-[1.1875rem] transition-shadow hover:shadow-lg">
@@ -91,13 +102,13 @@ const CategoryItem = () => {
                   alt={name}
                   className="w-full h-[230px] rounded-[0.625rem] object-cover"
                 />
-
+                  <Countdown_timer time={countdownTime} />
                 {/* Render host and participants */}
                 <div className="absolute left-3 -bottom-3">
                   <div className="flex -space-x-2">
                     <Tippy content={<span>Host: {host.username}</span>}>
                       <img
-                        src={getImageUrl(host.avatar)} // Use getImageUrl function to get avatar URL
+                        src={getImageUrl(host.avatar)}
                         alt="Host"
                         className="dark:border-jacarta-600 hover:border-accent dark:hover:border-accent h-6 w-6 rounded-full border-2 border-white"
                       />
@@ -109,11 +120,12 @@ const CategoryItem = () => {
                       >
                         <img
                           key={index}
-                          src={getImageUrl(participant.avatar)} // Use getImageUrl function to get avatar URL
+                          src={getImageUrl(participant.avatar)}
                           alt="Participant"
                           className="dark:border-jacarta-600 hover:border-accent dark:hover:border-accent h-6 w-6 rounded-full border-2 border-white"
                         />
                       </Tippy>
+
                     ))}
                   </div>
                 </div>
@@ -124,20 +136,30 @@ const CategoryItem = () => {
                 </span>
               </div>
               <div className="mt-2 text-sm">
-                <span className="dark:text-jacarta-200 text-jacarta-700 mr-1">
+                {/* <span className="dark:text-jacarta-200 text-jacarta-700 mr-1">
                   Entry Fee: {entry_fee}
-                </span>
+                </span> */}
                 <span className="dark:text-jacarta-300 text-jacarta-500">
-                  Prize Pool: {prize_pool}
+                  Prize Pool: ${prize_pool}
                 </span>
               </div>
               <div className="mt-8 flex items-center justify-between">
+              {/* <button
+                className="text-accent font-display text-sm font-semibold"
+                onClick={() => dispatch(bidsModalShow())}
+              >
+                Join
+              </button> */}
                 <button
                   className="text-accent font-display text-sm font-semibold"
                   onClick={() => handleRegister(uuid)}
                 >
                   Register
                 </button>
+                <Likes
+                like={totalParticipants + 1}
+                classes="flex items-center space-x-1"
+              />
               </div>
             </div>
           </article>

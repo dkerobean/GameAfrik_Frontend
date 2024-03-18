@@ -23,12 +23,12 @@ const Likes = ({
       <Tippy content={<span>Favorite</span>}>
         <button className="js-likes relative cursor-pointer">
           {likeState === likeNumber ? (
-            <svg className="icon icon-heart-fill dark:fill-jacarta-200 fill-jacarta-500 hover:fill-red dark:hover:fill-red h-4 w-4">
-              <use xlinkHref="/icons.svg#icon-hert-fill"></use>
+            <svg className="icon icon-user-fill dark:fill-jacarta-200 fill-jacarta-500 hover:fill-red dark:hover:fill-red h-4 w-4">
+              <use xlinkHref="/icons.svg#icon-user"></use>
             </svg>
           ) : (
-            <svg className="icon icon-heart-fill dark:fill-jacarta-200 fill-jacarta-500 hover:fill-red dark:hover:fill-red h-4 w-4">
-              <use xlinkHref="/icons.svg#icon-heart-fill"></use>
+            <svg className="icon icon-user-fill dark:fill-jacarta-200 fill-jacarta-500 hover:fill-red dark:hover:fill-red h-4 w-4">
+              <use xlinkHref="/icons.svg#icon-user"></use>
             </svg>
           )}
         </button>
