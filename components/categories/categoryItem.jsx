@@ -1,44 +1,60 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import Likes from "../likes";
-import Auctions_dropdown from "../dropdown/Auctions_dropdown";
-import { useDispatch, useSelector } from "react-redux";
-import { buyModalShow } from "../../redux/counterSlice";
-import { bidsModalShow } from "../../redux/counterSlice";
+import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Countdown_timer from "../Countdown_timer";
 
 const CategoryItem = () => {
   const [tournaments, setTournaments] = useState([]);
+  const [joinedTournaments, setJoinedTournaments] = useState([]);
   const backendUrl = process.env.NEXT_PUBLIC_APP_BACKEND_URL;
   const dispatch = useDispatch();
   const accessToken = localStorage.getItem("accessToken");
 
-  useEffect(() => {
-    const fetchTournaments = async () => {
-      try {
-        const response = await fetch(`${backendUrl}/api/tournaments/`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setTournaments(data);
-        } else {
-          throw new Error("Failed to fetch tournaments");
-        }
-      } catch (error) {
-        console.error("Error fetching tournaments:", error);
+  const fetchTournaments = async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/tournaments/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setTournaments(data);
+      } else {
+        throw new Error("Failed to fetch tournaments");
       }
-    };
+    } catch (error) {
+      console.error("Error fetching tournaments:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchTournaments();
+    fetchJoinedTournaments();
   }, [accessToken]);
+
+  const fetchJoinedTournaments = async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/tournaments/joined/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setJoinedTournaments(data);
+      } else {
+        throw new Error("Failed to fetch joined tournaments");
+      }
+    } catch (error) {
+      console.error("Error fetching joined tournaments:", error);
+    }
+  };
 
   const handleRegister = async (tournamentId) => {
     try {
@@ -52,12 +68,36 @@ const CategoryItem = () => {
       });
       if (response.ok) {
         toast.success("Successfully registered for the tournament!");
+        fetchTournaments();
       } else {
         throw new Error("Failed to register for the tournament");
       }
     } catch (error) {
       console.error("Error registering for the tournament:", error);
       toast.error("Failed to register for the tournament");
+    }
+  };
+
+  const handleLeave = async (tournamentId) => {
+    try {
+      const response = await fetch(`${backendUrl}/api/tournament/leave/${tournamentId}/`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response.ok) {
+        toast.success("Successfully left the tournament!");
+        fetchTournaments();
+
+        // Remove the tournament from the joined tournaments list
+        setJoinedTournaments(joinedTournaments.filter(tournament => tournament.uuid !== tournamentId));
+      } else {
+        throw new Error("Failed to leave the tournament");
+      }
+    } catch (error) {
+      console.error("Error leaving the tournament:", error);
+      toast.error("Failed to leave the tournament");
     }
   };
 
@@ -92,6 +132,8 @@ const CategoryItem = () => {
         // Calculate the total number of participants
         const totalParticipants = participants.length;
 
+        // Check if the user has joined this tournament
+        const isJoined = joinedTournaments.some(tournament => tournament.uuid === uuid);
 
         return (
           <article key={id}>
@@ -144,18 +186,21 @@ const CategoryItem = () => {
                 </span>
               </div>
               <div className="mt-8 flex items-center justify-between">
-              {/* <button
-                className="text-accent font-display text-sm font-semibold"
-                onClick={() => dispatch(bidsModalShow())}
-              >
-                Join
-              </button> */}
-                <button
-                  className="text-accent font-display text-sm font-semibold"
-                  onClick={() => handleRegister(uuid)}
-                >
-                  Register
-                </button>
+                {isJoined ? (
+                  <button
+                    className="text-accent font-display text-sm font-semibold"
+                    onClick={() => handleLeave(uuid)}
+                  >
+                    Leave
+                  </button>
+                ) : (
+                  <button
+                    className="text-accent font-display text-sm font-semibold"
+                    onClick={() => handleRegister(uuid)}
+                  >
+                    Register
+                  </button>
+                )}
                 <Likes
                 like={totalParticipants + 1}
                 classes="flex items-center space-x-1"
@@ -171,4 +216,3 @@ const CategoryItem = () => {
 };
 
 export default CategoryItem;
-

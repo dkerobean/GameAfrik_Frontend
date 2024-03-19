@@ -173,7 +173,7 @@ const CategoryItem = () => {
                   Entry Fee: {entry_fee}
                 </span> */}
                 <span className="dark:text-jacarta-300 text-jacarta-500">
-                  Prize Pool: {prize_pool}
+                  Prize Pool: ${prize_pool}
                 </span>
               </div>
               <div className="mt-8 flex items-center justify-between">
