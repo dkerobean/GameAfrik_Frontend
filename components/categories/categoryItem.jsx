@@ -67,8 +67,10 @@ const CategoryItem = () => {
         body: JSON.stringify({ tournamentId }),
       });
       if (response.ok) {
-        toast.success("Successfully registered for the tournament!");
+        fetchJoinedTournaments()
         fetchTournaments();
+        toast.success("Successfully registered for the tournament!");
+
       } else {
         throw new Error("Failed to register for the tournament");
       }
@@ -89,6 +91,7 @@ const CategoryItem = () => {
       if (response.ok) {
         toast.success("Successfully left the tournament!");
         fetchTournaments();
+
 
         // Remove the tournament from the joined tournaments list
         setJoinedTournaments(joinedTournaments.filter(tournament => tournament.uuid !== tournamentId));
@@ -158,8 +161,9 @@ const CategoryItem = () => {
                     {participants.map((participant, index) => (
                       <Tippy
                         key={index}
-                        content={<span>Participant: {participant.username}</span>}
+                        content={<span>Participant: {participant.username} </span>}
                       >
+
                         <img
                           key={index}
                           src={getImageUrl(participant.avatar)}
