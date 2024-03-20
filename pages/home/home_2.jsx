@@ -11,12 +11,16 @@ import {
 import Meta from "../../components/Meta";
 import Process from "../../components/blog/process";
 import Download from "../../components/blog/download";
+import Hero_4 from "../../components/hero/hero_4";
+import CoverflowCarousel from "../../components/carousel/coverflowCarousel";
 
 const Home_2 = () => {
   return (
     <>
       <Meta title="Home 2" />
-      <Hero_2 />
+      <Hero_4 />
+      <CoverflowCarousel />
+      {/* <Hero_2 /> */}
       <Browse_category />
       <Top_collection />
       <Process />

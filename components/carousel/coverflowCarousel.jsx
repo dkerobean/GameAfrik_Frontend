@@ -1,12 +1,32 @@
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, EffectCoverflow, Ally } from "swiper";
+import { Navigation, Pagination, EffectCoverflow } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
-import { coverflow_data } from "../../data/coverflow_data";
 import Link from "next/link";
 import Image from "next/image";
 
 const CoverflowCarousel = () => {
+  const [games, setGames] = useState([]);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/games/`);
+        if (response.ok) {
+          const data = await response.json();
+          setGames(data);
+        } else {
+          throw new Error("Failed to fetch games");
+        }
+      } catch (error) {
+        console.error("Error fetching games:", error);
+      }
+    };
+
+    fetchGames();
+  }, []);
+
   return (
     <>
       {/* <!-- Coverflow Slider --> */}
@@ -14,18 +34,13 @@ const CoverflowCarousel = () => {
         {/* <!-- Slider --> */}
         <Swiper
           breakpoints={{
-            // when window width is >= 640px
             100: {
-              // width: 640,
               slidesPerView: 1,
             },
             575: {
-              // width: 640,
               slidesPerView: 3,
             },
-            // when window width is >= 768px
             992: {
-              // width: 768,
               slidesPerView: 5,
             },
           }}
@@ -49,62 +64,52 @@ const CoverflowCarousel = () => {
           }}
           className="swiper coverflow-slider !py-5"
         >
-          {coverflow_data.map((item) => {
-            const { img, id, authorImage, authorName, title } = item;
-            const itemLink = img
-              .split("/")
-              .slice(-1)
-              .toString()
-              .replace(".jpg", "")
-              .replace(".gif", "")
-              .replace("_lg", "");
-            return (
-              <SwiperSlide key={id}>
-                <article>
-                  <div className="block overflow-hidden rounded-2.5xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-jacarta-700">
-                    <figure className="relative">
-                      <Link href={"/item/" + itemLink}>
-                        <a>
-                          <Image
-                            src={img}
-                            alt={title}
-                            className="swiper-lazy h-[430px] w-full object-cover"
-                            height="430"
-                            width="379"
+          {games.map((game) => (
+            <SwiperSlide key={game.id}>
+              <article>
+                <div className="block overflow-hidden rounded-2.5xl bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-jacarta-700">
+                  <figure className="relative">
+                    <Link href={`/item/${game.id}`}>
+                      <a>
+                        <Image
+                          src={`${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/${game.image}`}
+                          alt={game.title}
+                          className="swiper-lazy h-[430px] w-full object-cover"
+                          height={430}
+                          width={379}
+                        />
+                      </a>
+                    </Link>
+                  </figure>
+                  <div className="p-6">
+                    <div className="flex">
+                      {/* <Link href={`/user/${game.author}`}>
+                        <a className="shrink-0">
+                          <img
+                            src={`${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/${game.authorImage}`}
+                            alt="avatar"
+                            className="mr-4 h-10 w-10 rounded-full"
                           />
                         </a>
-                      </Link>
-                    </figure>
-                    <div className="p-6">
-                      <div className="flex">
-                        <Link href="/user/avatar_6">
-                          <a className="shrink-0">
-                            <img
-                              src={authorImage}
-                              alt="avatar"
-                              className="mr-4 h-10 w-10 rounded-full"
-                            />
+                      </Link> */}
+                      <div>
+                        <Link href={`/item/${game.id}`}>
+                          <a className="block">
+                            <span className="font-display text-lg leading-none text-jacarta-700 hover:text-accent dark:text-white">
+                              {game.name}
+                            </span>
                           </a>
                         </Link>
-                        <div>
-                          <Link href={"/item/" + itemLink}>
-                            <a className="block">
-                              <span className="font-display text-lg leading-none text-jacarta-700 hover:text-accent dark:text-white">
-                                {title}
-                              </span>
-                            </a>
-                          </Link>
-                          <Link href="/user/avatar_6">
-                            <a className="text-2xs text-accent">{authorName}</a>
-                          </Link>
-                        </div>
+                        {/* <Link href={`/user/${game.author}`}>
+                          <a className="text-2xs text-accent">{game.name}</a>
+                        </Link> */}
                       </div>
                     </div>
                   </div>
-                </article>
-              </SwiperSlide>
-            );
-          })}
+                </div>
+              </article>
+            </SwiperSlide>
+          ))}
         </Swiper>
 
         <div className="swiper-button-prev-4 group absolute top-1/2 left-4 z-10 -mt-6 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white p-3 text-jacarta-700 text-xl shadow-white-volume">

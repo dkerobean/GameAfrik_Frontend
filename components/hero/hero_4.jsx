@@ -23,15 +23,15 @@ const Hero_4 = () => {
         <div className="container">
           <div className="mx-auto max-w-2xl pt-24 text-center">
             <h1 className="mb-10 font-display text-5xl text-jacarta-700 dark:text-white lg:text-6xl xl:text-7xl">
-              Discover, Collect & Sell
-              <span className="animate-gradient"> Creative NFTs</span>
+              Explore, Join & Host
+              <span className="animate-gradient"> Gaming Competitions</span>
             </h1>
             {/* <!-- Search --> */}
             <form action="search" className="relative mb-4">
               <input
                 type="search"
                 className="w-full rounded-2xl border border-jacarta-100 py-4 px-4 pl-10 text-md text-jacarta-700 placeholder-jacarta-300 focus:ring-accent dark:border-transparent dark:bg-white/[.15] dark:text-white dark:placeholder-white"
-                placeholder="Search by Collection, NFT or user"
+                placeholder="Search by tournament or game name..."
               />
               <span className="absolute left-0 top-0 flex h-full w-12 items-center justify-center rounded-2xl">
                 <svg
@@ -52,17 +52,17 @@ const Hero_4 = () => {
             </span>
             <Link href="#">
               <a className="text-accent hover:text-jacarta-700 dark:hover:text-white">
-                cryptopunks,
+                FC24,
               </a>
             </Link>
             <Link href="#">
               <a className="text-accent hover:text-jacarta-700 dark:hover:text-white">
-                bored ape yacht club,
+                NBA2k,
               </a>
             </Link>
             <Link href="#">
               <a className="text-accent hover:text-jacarta-700 dark:hover:text-white">
-                moonbirds
+                FORZA
               </a>
             </Link>
           </div>
