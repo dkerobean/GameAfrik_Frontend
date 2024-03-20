@@ -37,11 +37,10 @@ const Process = () => {
 								</svg>
 							</div>
 							<h3 className="mb-4 font-display text-lg text-jacarta-700 dark:text-white">
-								Connect your Wallet
+								Play
 							</h3>
 							<p className="dark:text-jacarta-300">
-								Once {"you've"} set up your wallet of choice, connect it to OpenSeaby clicking the
-								NFT Marketplacein the top right corner.
+								Immerse yourself in captivating worlds and thrilling challenges, offering endless entertainment and adventure.
 							</p>
 						</div>
 						<div className="relative rounded-2.5xl border border-jacarta-100 bg-white p-10 shadow-[0_5px_0_0_#10b981] transition-shadow hover:shadow-[0_16px_24px_-8px_rgba(16,185,129,.3)] dark:border-jacarta-700 dark:bg-jacarta-700">
@@ -68,11 +67,10 @@ const Process = () => {
 								</svg>
 							</div>
 							<h3 className="mb-4 font-display text-lg text-jacarta-700 dark:text-white">
-								Create your NFT Store
+								Compete
 							</h3>
 							<p className="dark:text-jacarta-300">
-								Click Create and set up your collection. Add social links, a description, profile &
-								banner images, and set a secondary sales fee.
+								Test your skills against players from around the globe in fierce competitions, where every move counts and only the best emerge victorious.
 							</p>
 						</div>
 						<div className="relative rounded-2.5xl border border-jacarta-100 bg-white p-10 shadow-[0_5px_0_0_#ef4444] transition-shadow hover:shadow-[0_16px_24px_-8px_rgba(239,68,68,.3)] dark:border-jacarta-700 dark:bg-jacarta-700">
@@ -99,11 +97,10 @@ const Process = () => {
 								</svg>
 							</div>
 							<h3 className="mb-4 font-display text-lg text-jacarta-700 dark:text-white">
-								Start Selling & Growing
+								Win
 							</h3>
 							<p className="dark:text-jacarta-300">
-								Choose between auctions, fixed-price listings, and declining-price listings. You
-								choose how you want to sell your NFTs!
+								Claim your well-deserved glory as you conquer opponents and achieve greatness, earning rewards and recognition for your gaming prowess.
 							</p>
 						</div>
 					</div>

@@ -21,11 +21,11 @@ const Home_2 = () => {
       <Hero_4 />
       <CoverflowCarousel />
       {/* <Hero_2 /> */}
-      <Browse_category />
-      <Top_collection />
       <Process />
       <Auctions_categories />
-      <NewseLatter />
+      <Top_collection />
+      <Browse_category />
+      {/* <NewseLatter /> */}
       <Feature_collections />
       <Partners />
       <Download />
