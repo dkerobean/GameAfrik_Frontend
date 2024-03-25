@@ -8,6 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Countdown_timer from "../Countdown_timer";
 import Likes from "../likes";
+import Link from "next/link";
 
 const CategoryItem = () => {
   const [tournaments, setTournaments] = useState([]);
@@ -136,6 +137,14 @@ const CategoryItem = () => {
                   alt={name}
                   className="w-full h-[230px] rounded-[0.625rem] object-cover"
                 />
+                <div className="absolute top-0 left-0 bg-black bg-opacity-50 text-white p-2 rounded-tl rounded-br">
+                  <span className="rounded bg-red py-1 px-2 text-tiny font-bold uppercase leading-none text-white ml-4">
+                    {participants.length} / 12
+                  </span>
+                    {/* <div className="bg-black bg-opacity-50 rounded px-2 py-1">
+                      <span className="font-bold"></span> Participants
+                    </div> */}
+                </div>
                 <Countdown_timer time={countdownTime} />
                 {/* Render host and participants */}
                 <div className="absolute left-3 -bottom-3">
@@ -192,10 +201,16 @@ const CategoryItem = () => {
                     Join
                   </button>
                 )}
-                <Likes
-                like={totalParticipants + 1}
-                classes="flex items-center space-x-1"
-              />
+                <Link href="#">
+                  <a className="group flex items-center">
+                    <svg className="icon icon-history group-hover:fill-accent dark:fill-jacarta-200 fill-jacarta-500 mr-1 mb-[3px] h-4 w-4">
+                      <use xlinkHref="/icons.svg#icon-history"></use>
+                    </svg>
+                    <span className="group-hover:text-accent font-display dark:text-jacarta-200 text-sm font-semibold">
+                      Free Entry
+                    </span>
+                  </a>
+                </Link>
               </div>
             </div>
           </article>

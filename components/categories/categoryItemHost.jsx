@@ -167,21 +167,13 @@ const CategoryItem = () => {
                 </span>
               </div>
               <div className="mt-8 flex items-center justify-between">
-                {isJoined ? (
+
                   <button
                     className="text-accent font-display text-sm font-semibold"
                     onClick={() => handleLeaveTournament(tournament.uuid, tournament.name)}
                   >
-                    Leave
+                    View Tournament
                   </button>
-                ) : (
-                  <button
-                    className="text-accent font-display text-sm font-semibold"
-                    onClick={() => handleJoinTournament(tournament.uuid)}
-                  >
-                    Join
-                  </button>
-                )}
               </div>
             </div>
           </article>
