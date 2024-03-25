@@ -59,6 +59,7 @@ const Auctions_categories = () => {
                 name,
                 host,
                 participants,
+                number_of_participants,
                 game_type,
                 game_mode,
                 game_format,
@@ -81,7 +82,7 @@ const Auctions_categories = () => {
                       />
                       <div className="absolute top-0 left-0 bg-black bg-opacity-50 text-white p-2 rounded-tl rounded-br">
                       <span className="rounded bg-red py-1 px-2 text-tiny font-bold uppercase leading-none text-white ml-4">
-                        {participants.length} / 12
+                        {participants.length} / {number_of_participants}
                       </span>
                         {/* <div className="bg-black bg-opacity-50 rounded px-2 py-1">
                           <span className="font-bold"></span> Participants
