@@ -63,7 +63,6 @@ const Item = () => {
 										<button className=" w-full" onClick={() => setImageModal(true)}>
 											<img src={`${backendUrl}/${tournament.image}`} alt="tournamentt-image" className="rounded-2xl cursor-pointer w-full" />
 										</button>
-
 										{/* <!-- Modal --> */}
 										<div className={imageModal ? 'modal fade show block' : 'modal fade'}>
 											<div className="modal-dialog !my-0 flex h-full max-w-4xl items-center justify-center">
@@ -97,9 +96,9 @@ const Item = () => {
 											{/* <!-- Collection --> */}
 											<div className="flex items-center">
 												<Link href="#">
-													<a className="text-accent mr-2 text-sm font-bold">{tournament.name}</a>
+													<a className="text-accent mr-2 text-sm font-bold">{tournament.game && tournament.game.name}</a>
 												</Link>
-												<span
+												{/* <span
 													className="dark:border-jacarta-600 bg-green inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white"
 													data-tippy-content="Verified Collection"
 												>
@@ -108,19 +107,23 @@ const Item = () => {
 															<use xlinkHref="/icons.svg#icon-right-sign"></use>
 														</svg>
 													</Tippy>
-												</span>
+												</span> */}
 											</div>
 
 											{/* <!-- Likes / Actions --> */}
 											<div className="ml-auto flex items-stretch space-x-2 relative">
+											{/* <div className="absolute top-0 left-0 bg-black bg-opacity-50 text-white p-2 rounded-tl rounded-br">
+											<span className="rounded bg-red py-1 px-2 text-tiny font-bold uppercase leading-none text-white ml-4">
+													/ {tournament.number_of_participants}
+											</span>
+										</div> */}
 												<Likes
 													like={tournament.number_of_participants}
 													classes="dark:bg-jacarta-700 dark:border-jacarta-600 border-jacarta-100 flex items-center space-x-1 rounded-xl border bg-white py-2 px-4"
 												/>
-
-												{/* <!-- Actions --> */}
-												<Auctions_dropdown classes="dark:border-jacarta-600 dark:hover:bg-jacarta-600 border-jacarta-100 dropdown hover:bg-jacarta-100 dark:bg-jacarta-700 rounded-xl border bg-white" />
 											</div>
+
+
 										</div>
 
 										<h1 className="font-display text-jacarta-700 mb-4 text-4xl font-semibold dark:text-white">
@@ -137,14 +140,17 @@ const Item = () => {
 													</span>
 												</Tippy>
 												<span className="text-green text-sm font-medium tracking-tight">
-													$ ETH
+													$ {tournament.prize_pool}
 												</span>
 											</div>
 											<span className="dark:text-jacarta-300 text-jacarta-400 text-sm">
-												Highest bid
+												{tournament.game_type}
 											</span>
 											<span className="dark:text-jacarta-300 text-jacarta-400 text-sm">
-												1/1 available
+												{tournament.game_mode}
+											</span>
+											<span className="dark:text-jacarta-300 text-jacarta-400 text-sm">
+												{tournament.game_format}
 											</span>
 										</div>
 
@@ -157,7 +163,7 @@ const Item = () => {
 													<Link href="/user/avatar_6">
 														<a className="relative block">
 															<img
-																src="creatorImage"
+																src={`${backendUrl}/${tournament.host && tournament.host.avatar}`}
 																alt="creatorname"
 																className="rounded-2lg h-12 w-12"
 																loading="lazy"
@@ -166,7 +172,7 @@ const Item = () => {
 																className="dark:border-jacarta-600 bg-green absolute -right-3 top-[60%] flex h-6 w-6 items-center justify-center rounded-full border-2 border-white"
 																data-tippy-content="Verified Collection"
 															>
-																<Tippy content={<span>Verified Collection</span>}>
+																<Tippy content={<span>Verified</span>}>
 																	<svg className="icon h-[.875rem] w-[.875rem] fill-white">
 																		<use xlinkHref="/icons.svg#icon-right-sign"></use>
 																	</svg>
@@ -175,15 +181,25 @@ const Item = () => {
 														</a>
 													</Link>
 												</figure>
+												<div className="flex flex-col justify-center">
+													<span className="text-jacarta-400 block text-sm dark:text-white">
+														Hosted by
+													</span>
+													<Link href="/user/avatar_6">
+														<a className="text-accent block">
+															<span className="text-sm font-bold">{tournament.host && tournament.host.username}</span>
+														</a>
+													</Link>
+												</div>
 											</div>
 
-											<div className="mb-4 flex">
+											{/* <div className="mb-4 flex">
 												<figure className="mr-4 shrink-0">
 													<Link href="/user/avatar_6">
 														<a className="relative block">
 															<img
-																src="ownerImage"
-																alt="ownerName"
+																src={`${backendUrl}/${tournament.host.avatar}`}
+																alt="host"
 																className="rounded-2lg h-12 w-12"
 																loading="lazy"
 															/>
@@ -202,7 +218,7 @@ const Item = () => {
 												</figure>
 												<div className="flex flex-col justify-center">
 													<span className="text-jacarta-400 block text-sm dark:text-white">
-														Owned by
+														Hosted by
 													</span>
 													<Link href="/user/avatar_6">
 														<a className="text-accent block">
@@ -210,7 +226,7 @@ const Item = () => {
 														</a>
 													</Link>
 												</div>
-											</div>
+											</div> */}
 										</div>
 
 										{/* <!-- Bid --> */}
