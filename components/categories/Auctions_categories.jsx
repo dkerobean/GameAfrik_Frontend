@@ -136,7 +136,7 @@ const Auctions_categories = () => {
                       >
                         View
                       </button>
-                      <Link href="#">
+                      <Link href={`/item/${uuid}`}>
                         <a className="group flex items-center">
                           <svg className="icon icon-history group-hover:fill-accent dark:fill-jacarta-200 fill-jacarta-500 mr-1 mb-[3px] h-4 w-4">
                             <use xlinkHref="/icons.svg#icon-history"></use>

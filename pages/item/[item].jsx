@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { items_data } from '../../data/items_data';
 import Auctions_dropdown from '../../components/dropdown/Auctions_dropdown';
@@ -16,49 +16,58 @@ import { bidsModalShow } from '../../redux/counterSlice';
 const Item = () => {
 	const dispatch = useDispatch();
 	const router = useRouter();
-	const pid = router.query.item;
+	const uuid = router.query.item;
+	const backendUrl = process.env.NEXT_PUBLIC_APP_BACKEND_URL;
 
 	const [imageModal, setImageModal] = useState(false);
+	const [tournament, setTournament] = useState([]);
+
+	useEffect(() => {
+		const accessToken = localStorage.getItem("accessToken");
+        const fetchTournamentData = async () => {
+            try {
+                const response = await fetch(`${backendUrl}/api/tournament/single/${uuid}/`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tournament data');
+                }
+                const data = await response.json();
+                setTournament(data);
+				console.log(data);
+            } catch (error) {
+                console.error('Error fetching tournament data:', error);
+            }
+        };
+
+        if (uuid && accessToken) {
+            fetchTournamentData();
+        }
+    }, [uuid, backendUrl]);
 
 	return (
 		<>
-			<Meta title={`${pid} || Xhibiter | NFT Marketplace Next.js Template`} />
+			<Meta title={`${tournament.name} || GamingAfrik`} />
 			{/*  <!-- Item --> */}
 			<section className="relative lg:mt-24 lg:pt-24 lg:pb-24 mt-24 pt-12 pb-24">
 				<picture className="pointer-events-none absolute inset-0 -z-10 dark:hidden">
 					<img src="/images/gradient_light.jpg" alt="gradient" className="h-full" />
 				</picture>
 				<div className="container">
-					{/* <!-- Item --> */}
-					{items_data
-						.filter((item) => item.id === pid)
-						.map((item) => {
-							const {
-								image,
-								title,
-								id,
-								likes,
-								text,
-								creatorImage,
-								ownerImage,
-								creatorname,
-								ownerName,
-								price,
-								auction_timer,
-							} = item;
 
-							return (
-								<div className="md:flex md:flex-wrap" key={id}>
+								<div className="md:flex md:flex-wrap" key={uuid}>
 									{/* <!-- Image --> */}
 									<figure className="mb-8 md:w-2/5 md:flex-shrink-0 md:flex-grow-0 md:basis-auto lg:w-1/2 w-full">
 										<button className=" w-full" onClick={() => setImageModal(true)}>
-											<img src={image} alt={title} className="rounded-2xl cursor-pointer  w-full" />
+											<img src={`${backendUrl}/${tournament.image}`} alt="tournamentt-image" className="rounded-2xl cursor-pointer w-full" />
 										</button>
 
 										{/* <!-- Modal --> */}
 										<div className={imageModal ? 'modal fade show block' : 'modal fade'}>
 											<div className="modal-dialog !my-0 flex h-full max-w-4xl items-center justify-center">
-												<img src={image} alt={title} className="h-full rounded-2xl" />
+												<img src="#" alt="title" className="h-full rounded-2xl" />
 											</div>
 
 											<button
@@ -88,7 +97,7 @@ const Item = () => {
 											{/* <!-- Collection --> */}
 											<div className="flex items-center">
 												<Link href="#">
-													<a className="text-accent mr-2 text-sm font-bold">CryptoGuysNFT</a>
+													<a className="text-accent mr-2 text-sm font-bold">{tournament.name}</a>
 												</Link>
 												<span
 													className="dark:border-jacarta-600 bg-green inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white"
@@ -105,7 +114,7 @@ const Item = () => {
 											{/* <!-- Likes / Actions --> */}
 											<div className="ml-auto flex items-stretch space-x-2 relative">
 												<Likes
-													like={likes}
+													like={tournament.number_of_participants}
 													classes="dark:bg-jacarta-700 dark:border-jacarta-600 border-jacarta-100 flex items-center space-x-1 rounded-xl border bg-white py-2 px-4"
 												/>
 
@@ -115,7 +124,7 @@ const Item = () => {
 										</div>
 
 										<h1 className="font-display text-jacarta-700 mb-4 text-4xl font-semibold dark:text-white">
-											{title}
+											{tournament.name}
 										</h1>
 
 										<div className="mb-8 flex items-center space-x-4 whitespace-nowrap">
@@ -128,7 +137,7 @@ const Item = () => {
 													</span>
 												</Tippy>
 												<span className="text-green text-sm font-medium tracking-tight">
-													{price} ETH
+													$ ETH
 												</span>
 											</div>
 											<span className="dark:text-jacarta-300 text-jacarta-400 text-sm">
@@ -139,7 +148,7 @@ const Item = () => {
 											</span>
 										</div>
 
-										<p className="dark:text-jacarta-300 mb-10">{text}</p>
+										<p className="dark:text-jacarta-300 mb-10">{tournament.description}</p>
 
 										{/* <!-- Creator / Owner --> */}
 										<div className="mb-8 flex flex-wrap">
@@ -148,8 +157,8 @@ const Item = () => {
 													<Link href="/user/avatar_6">
 														<a className="relative block">
 															<img
-																src={creatorImage}
-																alt={creatorname}
+																src="creatorImage"
+																alt="creatorname"
 																className="rounded-2lg h-12 w-12"
 																loading="lazy"
 															/>
@@ -166,16 +175,6 @@ const Item = () => {
 														</a>
 													</Link>
 												</figure>
-												<div className="flex flex-col justify-center">
-													<span className="text-jacarta-400 block text-sm dark:text-white">
-														Creator <strong>10% royalties</strong>
-													</span>
-													<Link href="/user/avatar_6">
-														<a className="text-accent block">
-															<span className="text-sm font-bold">{creatorname}</span>
-														</a>
-													</Link>
-												</div>
 											</div>
 
 											<div className="mb-4 flex">
@@ -183,8 +182,8 @@ const Item = () => {
 													<Link href="/user/avatar_6">
 														<a className="relative block">
 															<img
-																src={ownerImage}
-																alt={ownerName}
+																src="ownerImage"
+																alt="ownerName"
 																className="rounded-2lg h-12 w-12"
 																loading="lazy"
 															/>
@@ -207,7 +206,7 @@ const Item = () => {
 													</span>
 													<Link href="/user/avatar_6">
 														<a className="text-accent block">
-															<span className="text-sm font-bold">{ownerName}</span>
+															<span className="text-sm font-bold">{tournament.host && tournament.host.username}</span>
 														</a>
 													</Link>
 												</div>
@@ -252,7 +251,7 @@ const Item = () => {
 																	</span>
 																</Tippy>
 																<span className="text-green text-lg font-medium leading-tight tracking-tight">
-																	{price} ETH
+																	price ETH
 																</span>
 															</div>
 															<span className="dark:text-jacarta-300 text-jacarta-400 text-sm">
@@ -267,7 +266,7 @@ const Item = () => {
 													<span className="js-countdown-ends-label text-jacarta-400 dark:text-jacarta-300 text-sm">
 														Auction ends in
 													</span>
-													<Items_Countdown_timer time={+auction_timer} />
+													{/* <Items_Countdown_timer time={+auction_timer} /> */}
 												</div>
 											</div>
 
@@ -284,8 +283,6 @@ const Item = () => {
 									</div>
 									{/* <!-- end details --> */}
 								</div>
-							);
-						})}
 					<ItemsTabs />
 				</div>
 			</section>
