@@ -111,18 +111,15 @@ const Item = () => {
 											</div>
 
 											{/* <!-- Likes / Actions --> */}
-											<div className="ml-auto flex items-stretch space-x-2 relative">
-											{/* <div className="absolute top-0 left-0 bg-black bg-opacity-50 text-white p-2 rounded-tl rounded-br">
-											<span className="rounded bg-red py-1 px-2 text-tiny font-bold uppercase leading-none text-white ml-4">
-													/ {tournament.number_of_participants}
-											</span>
-										</div> */}
-												<Likes
-													like={tournament.number_of_participants}
-													classes="dark:bg-jacarta-700 dark:border-jacarta-600 border-jacarta-100 flex items-center space-x-1 rounded-xl border bg-white py-2 px-4"
-												/>
-											</div>
-
+											{tournament && tournament.participants && (
+												<div className="ml-auto flex items-stretch space-x-2 relative">
+													<div className="">
+														<span className="dark:bg-jacarta-700 dark:border-jacarta-600 border-jacarta-100 flex items-center space-x-1 rounded-xl border bg-white py-1 px-3">
+															{tournament.participants.length} / {tournament.number_of_participants}
+														</span>
+													</div>
+												</div>
+											)}
 
 										</div>
 
