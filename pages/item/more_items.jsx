@@ -8,7 +8,7 @@ const More_items = () => {
 			{/* <!-- Hot Bids --> */}
 			<div className="container">
 				<HeadLine
-					text="More from this collection"
+					text="More Tournaments"
 					classes="font-display text-jacarta-700 mb-8 text-center text-3xl dark:text-white"
 				/>
 

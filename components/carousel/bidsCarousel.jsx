@@ -1,22 +1,43 @@
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import Image from "next/image";
 import "tippy.js/dist/tippy.css";
-import { bidsData } from "../../data/bids_data";
-import Link from "next/link";
-import Tippy from "@tippyjs/react";
-import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from "react-icons/md";
-import { bidsModalShow } from "../../redux/counterSlice";
 import { useDispatch } from "react-redux";
 import Likes from "../likes";
+import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from "react-icons/md";
+import { bidsModalShow } from "../../redux/counterSlice";
+import Link from "next/link";
+import Tippy from "@tippyjs/react";
+import { useRouter } from "next/router";
 
 const BidsCarousel = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
-  const handleclick = () => {
-    console.log("clicked on ");
-  };
+  const [tournament, setTournament] = useState([]);
+
+  useEffect(() => {
+    const fetchBidsData = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournaments/`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setTournament(data);
+        } else {
+          throw new Error("Failed to fetch data");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchBidsData();
+  }, []);
+
   return (
     <>
       <Swiper
@@ -44,26 +65,28 @@ const BidsCarousel = () => {
         }}
         className=" card-slider-4-columns !py-5"
       >
-        {bidsData.map((item) => {
-          const { id, image, title, bid_number, eth_number, react_number } =
+        {tournament.map((item) => {
+          const { id, image, name, entry_fee, prize_pool, number_of_participants} =
             item;
           const itemLink = image
             .split("/")
             .slice(-1)
             .toString()
             .replace(".jpg", "");
+
+          const imageUrl = `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}${image}`;
+
           return (
             <SwiperSlide className="text-white" key={id}>
               <article>
                 <div className="dark:bg-jacarta-700 dark:border-jacarta-700 border-jacarta-100 rounded-2xl block border bg-white p-[1.1875rem] transition-shadow hover:shadow-lg text-jacarta-500">
                   <figure>
-                    {/* {`item/${itemLink}`} */}
                     <Link href={"/item/" + itemLink}>
                       <a>
                         <div className="w-full">
                           <Image
-                            src={image}
-                            alt={title}
+                            src={imageUrl}
+                            alt="tournament-image"
                             height={230}
                             width={230}
                             layout="responsive"
@@ -79,44 +102,41 @@ const BidsCarousel = () => {
                     <Link href={"/item/" + itemLink}>
                       <a>
                         <span className="font-display text-jacarta-700 hover:text-accent text-base dark:text-white">
-                          {title}
+                          {name}
                         </span>
                       </a>
                     </Link>
                     <span className="dark:border-jacarta-600 border-jacarta-100 flex items-center whitespace-nowrap rounded-md border py-1 px-2">
-                      <Tippy content={<span>ETH</span>}>
+                      <Tippy content={<span>GOLD</span>}>
                         <img
                           src="/images/eth-icon.svg"
                           alt=""
                           className="w-3 h-3 mr-1"
                         />
                       </Tippy>
-
                       <span className="text-green text-sm font-medium tracking-tight">
-                        {eth_number} ETH
+                        ${prize_pool}
                       </span>
                     </span>
                   </div>
                   <div className="mt-2 text-sm">
                     <span className="dark:text-jacarta-300 text-jacarta-500">
-                      Current Bid
+                      Entry Fee
                     </span>
-                    <span className="dark:text-jacarta-100 text-jacarta-700">
-                      {bid_number} ETH
+                    <span className="dark:text-jacarta-100 text-jacarta-700 ml-2">
+                       ${entry_fee}
                     </span>
                   </div>
-
                   <div className="mt-8 flex items-center justify-between">
                     <button
                       type="button"
                       className="text-accent font-display text-sm font-semibold"
                       onClick={() => dispatch(bidsModalShow())}
                     >
-                      Place bid
+                      View
                     </button>
-
                     <Likes
-                      like={react_number}
+                      like={number_of_participants}
                       classes="flex items-center space-x-1"
                     />
                   </div>

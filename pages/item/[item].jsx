@@ -47,6 +47,9 @@ const Item = () => {
         }
     }, [uuid, backendUrl]);
 
+	// Calculate countdownTime only if tournament is available
+    const countdownTime = tournament ? new Date(tournament.start_date).getTime() - new Date().getTime() : null;
+	const timer = countdownTime !== null ? parseInt(countdownTime) : null;
 	return (
 		<>
 			<Meta title={`${tournament.name} || GamingAfrik`} />
@@ -233,16 +236,16 @@ const Item = () => {
 												<div className="sm:w-1/2 sm:pr-4 lg:pr-8">
 													<div className="block overflow-hidden text-ellipsis whitespace-nowrap">
 														<span className="dark:text-jacarta-300 text-jacarta-400 text-sm">
-															Highest bid by{' '}
+															Entry Fee{' '}
 														</span>
 														<Link href="/user/avatar_6">
 															<a className="text-accent text-sm font-bold">
-																0x695d2ef170ce69e794707eeef9497af2de25df82
+																${tournament.entry_fee}
 															</a>
 														</Link>
 													</div>
 													<div className="mt-3 flex">
-														<figure className="mr-4 shrink-0">
+														{/* <figure className="mr-4 shrink-0">
 															<Link href="#">
 																<a className="relative block">
 																	<img
@@ -253,10 +256,10 @@ const Item = () => {
 																	/>
 																</a>
 															</Link>
-														</figure>
+														</figure> */}
 														<div>
 															<div className="flex items-center whitespace-nowrap">
-																<Tippy content={<span>ETH</span>}>
+																<Tippy content={<span>GOLD</span>}>
 																	<span className="-ml-1">
 																		<svg className="icon mr-1 h-4 w-4">
 																			<use xlinkHref="/icons.svg#icon-ETH"></use>
@@ -264,12 +267,12 @@ const Item = () => {
 																	</span>
 																</Tippy>
 																<span className="text-green text-lg font-medium leading-tight tracking-tight">
-																	price ETH
+																	price ${tournament.prize_pool}
 																</span>
 															</div>
-															<span className="dark:text-jacarta-300 text-jacarta-400 text-sm">
+															{/* <span className="dark:text-jacarta-300 text-jacarta-400 text-sm">
 																~10,864.10
-															</span>
+															</span> */}
 														</div>
 													</div>
 												</div>
@@ -277,9 +280,9 @@ const Item = () => {
 												{/* <!-- Countdown --> */}
 												<div className="dark:border-jacarta-600 sm:border-jacarta-100 mt-4 sm:mt-0 sm:w-1/2 sm:border-l sm:pl-4 lg:pl-8">
 													<span className="js-countdown-ends-label text-jacarta-400 dark:text-jacarta-300 text-sm">
-														Auction ends in
+														Tournament Begins In
 													</span>
-													{/* <Items_Countdown_timer time={+auction_timer} /> */}
+													<Items_Countdown_timer time={timer} />
 												</div>
 											</div>
 
@@ -288,7 +291,7 @@ const Item = () => {
 													className="bg-accent shadow-accent-volume hover:bg-accent-dark inline-block w-full rounded-full py-3 px-8 text-center font-semibold text-white transition-all"
 													onClick={() => dispatch(bidsModalShow())}
 												>
-													Place Bid
+													Register
 												</button>
 											</Link>
 										</div>
