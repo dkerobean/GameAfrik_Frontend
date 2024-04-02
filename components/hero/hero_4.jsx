@@ -47,7 +47,7 @@ const Hero_4 = () => {
               </span>
             </form>
 
-            <span className="dark:text-jacarta-300 text-accent">
+            <span className="dark:text-jacarta-300 text-accent mr-2">
               Popular searches:
             </span>
             <Link href="#">

@@ -17,7 +17,7 @@ import CoverflowCarousel from "../../components/carousel/coverflowCarousel";
 const Home_2 = () => {
   return (
     <>
-      <Meta title="Home 2" />
+      <Meta title="Home" />
       <Hero_4 />
       <CoverflowCarousel />
       {/* <Hero_2 /> */}
@@ -26,7 +26,7 @@ const Home_2 = () => {
       <Top_collection />
       <Browse_category />
       {/* <NewseLatter /> */}
-      <Feature_collections />
+      {/* <Feature_collections /> */}
       <Partners />
       <Download />
     </>
