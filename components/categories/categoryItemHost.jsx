@@ -6,12 +6,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { buyModalShow } from "../../redux/counterSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const CategoryItem = () => {
   const [tournaments, setTournaments] = useState([]);
   const [joinedTournaments, setJoinedTournaments] = useState([]);
   const backendUrl = process.env.NEXT_PUBLIC_APP_BACKEND_URL;
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const fetchTournaments = async () => {
     try {
@@ -92,6 +95,16 @@ const CategoryItem = () => {
     }
   };
 
+  const handleViewButtonClick = (uuid) => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      router.push("/login");
+    } else {
+      // Redirect to the tournament page
+      router.push(`/item/${uuid}`);
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 gap-[1.875rem] md:grid-cols-2 lg:grid-cols-4">
       {joinedTournaments.map((tournament) => {
@@ -108,6 +121,7 @@ const CategoryItem = () => {
           end_date,
           status,
           host,
+          uuid,
           participants,
         } = tournament;
 
@@ -119,6 +133,8 @@ const CategoryItem = () => {
 
         return (
           <article key={id}>
+           <div onClick={() => handleViewButtonClick(uuid)}>
+            <Link href={`/item/${uuid}`}>
             <div className="dark:bg-jacarta-700 dark:border-jacarta-700 border-jacarta-100 rounded-2.5xl block border bg-white p-[1.1875rem] transition-shadow hover:shadow-lg">
               <figure className="relative">
                 <img
@@ -170,11 +186,13 @@ const CategoryItem = () => {
 
                   <button
                     className="text-accent font-display text-sm font-semibold"
-                    onClick={() => handleLeaveTournament(tournament.uuid, tournament.name)}
+                    onClick={handleViewButtonClick}
                   >
                     View Tournament
                   </button>
               </div>
+            </div>
+            </Link>
             </div>
           </article>
         );
