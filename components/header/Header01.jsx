@@ -67,74 +67,6 @@ export default function Header01() {
   const home = {
     id: 1,
     name: "Home",
-    pages: [
-      {
-        id: uuidv4(),
-        name: "Home 1",
-        path: "/",
-      },
-      {
-        id: uuidv4(),
-        name: "Home 22",
-        path: "/home/home_2",
-      },
-      {
-        id: uuidv4(),
-        name: "Home 3",
-        path: "/home/home_3",
-      },
-      {
-        id: uuidv4(),
-        name: "Home 4",
-        path: "/home/home_4",
-      },
-      {
-        id: uuidv4(),
-        name: "Home 5",
-        path: "/home/home_5",
-      },
-      {
-        id: uuidv4(),
-        name: "Home 6",
-        path: "/home/home_6",
-      },
-      {
-        id: uuidv4(),
-        name: "Crypto Consultant",
-        condition: true,
-        path: "/home/home_7",
-      },
-      {
-        id: uuidv4(),
-        name: "NFT Game",
-        condition: true,
-        path: "/home/home_8",
-      },
-      {
-        id: uuidv4(),
-        name: "Dao Platform",
-        condition: true,
-        path: "/home/home_9",
-      },
-      {
-        id: uuidv4(),
-        name: "Crypto App",
-        condition: true,
-        path: "/home/home_10",
-      },
-      {
-        id: uuidv4(),
-        name: "Crypto Trading",
-        condition: true,
-        path: "/home/home_11",
-      },
-      {
-        id: uuidv4(),
-        name: "ICO Landing",
-        condition: true,
-        path: "/home/home_12",
-      },
-    ],
   };
 
   const page = {
@@ -493,7 +425,7 @@ export default function Header01() {
             <nav className="navbar w-full">
               <ul className="flex flex-col lg:flex-row">
                 {/* home */}
-                <li className="js-nav-dropdown group relative">
+                {/* <li className="js-nav-dropdown group relative">
                   <button className="dropdown-toggle text-jacarta-700 font-display hover:text-accent focus:text-accent dark:hover:text-accent dark:focus:text-accent flex items-center justify-between py-3.5 text-base dark:text-white lg:px-5 w-full">
                     <span
                       className={
@@ -541,10 +473,27 @@ export default function Header01() {
                       </li>
                     ))}
                   </ul>
+                </li> */}
+                <li className="group">
+                  <Link href="/">
+                    <a>
+                      <button className="text-jacarta-700 font-display hover:text-accent focus:text-accent dark:hover:text-accent dark:focus:text-accent flex items-center justify-between py-3.5 text-base dark:text-white lg:px-5">
+                        <span
+                          className={
+                            isChildrenPageActive(route.asPath, "/create")
+                              ? "text-accent dark:text-accent"
+                              : ""
+                          }
+                        >
+                          Home
+                        </span>
+                      </button>
+                    </a>
+                  </Link>
                 </li>
 
                 {/* page */}
-                <li className="js-nav-dropdown group relative">
+                {/* <li className="js-nav-dropdown group relative">
                   <button className="dropdown-toggle text-jacarta-700 font-display hover:text-accent focus:text-accent dark:hover:text-accent dark:focus:text-accent flex items-center justify-between py-3.5 text-base dark:text-white lg:px-5 w-full">
                     <span
                       className={
@@ -592,10 +541,10 @@ export default function Header01() {
                       </li>
                     ))}
                   </ul>
-                </li>
+                </li> */}
 
                 {/* explore */}
-                <li className="js-nav-dropdown nav-item dropdown group relative">
+                {/* <li className="js-nav-dropdown nav-item dropdown group relative">
                   <button className="dropdown-toggle text-jacarta-700 font-display hover:text-accent focus:text-accent dark:hover:text-accent dark:focus:text-accent flex items-center justify-between py-3.5 text-base dark:text-white lg:px-5 w-full">
                     <span
                       className={
@@ -638,10 +587,10 @@ export default function Header01() {
                       </li>
                     ))}
                   </ul>
-                </li>
+                </li> */}
 
                 {/* resource */}
-                <li className="js-nav-dropdown group relative">
+                {/* <li className="js-nav-dropdown group relative">
                   <button className="dropdown-toggle text-jacarta-700 font-display hover:text-accent focus:text-accent dark:hover:text-accent dark:focus:text-accent flex items-center justify-between py-3.5 text-base dark:text-white lg:px-5 w-full">
                     <span
                       className={
@@ -687,6 +636,24 @@ export default function Header01() {
                       </li>
                     ))}
                   </ul>
+                </li> */}
+
+                <li className="group">
+                  <Link href="/create">
+                    <a>
+                      <button className="text-jacarta-700 font-display hover:text-accent focus:text-accent dark:hover:text-accent dark:focus:text-accent flex items-center justify-between py-3.5 text-base dark:text-white lg:px-5">
+                        <span
+                          className={
+                            isChildrenPageActive(route.asPath, "/create")
+                              ? "text-accent dark:text-accent"
+                              : ""
+                          }
+                        >
+                          Tournaments
+                        </span>
+                      </button>
+                    </a>
+                  </Link>
                 </li>
 
                 {/* create */}
