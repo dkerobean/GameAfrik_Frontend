@@ -1,3 +1,5 @@
+// _app.js
+
 import "../styles/globals.css";
 import { ThemeProvider } from "next-themes";
 import Layout from "../components/layout";
@@ -18,10 +20,10 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
-      <Meta title="Home 1" />
+      <Meta title="Home" />
 
       <Provider store={store}>
-        <ThemeProvider enableSystem={true} attribute="class">
+        <ThemeProvider defaultTheme="dark" enableSystem={true} attribute="class">
           <MetaMaskProvider>
             <UserContext.Provider value={{ scrollRef: scrollRef }}>
               {pid === "/login" ? (

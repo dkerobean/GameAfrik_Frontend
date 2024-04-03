@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, EffectCoverflow } from "swiper";
+import { Navigation, Pagination, EffectCoverflow, Ally } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
