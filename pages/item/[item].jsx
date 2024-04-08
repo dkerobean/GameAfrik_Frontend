@@ -47,9 +47,14 @@ const Item = () => {
         }
     }, [uuid, backendUrl]);
 
+	function formatStartDate(startDate) {
+		const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZone: 'UTC' };
+		return new Date(startDate).toLocaleString('en-US', options);
+	}
+
 	// Calculate countdownTime only if tournament is available
-    const countdownTime = tournament ? new Date(tournament.start_date).getTime() - new Date().getTime() : null;
-	const timer = countdownTime !== null ? parseInt(countdownTime) : null;
+    const countdownTime = tournament ? new Date().getTime() - new Date(tournament.start_date).getTime() : null;
+	console.log(countdownTime);
 	return (
 		<>
 			<Meta title={`${tournament.name} || GamingAfrik`} />
@@ -282,7 +287,11 @@ const Item = () => {
 													<span className="js-countdown-ends-label text-jacarta-400 dark:text-jacarta-300 text-sm">
 														Tournament Begins In
 													</span>
-													<Items_Countdown_timer time={timer} />
+													<span className="text-jacarta-400 mt-4 dark:text-jacarta-300 text-sm">
+													<p>{formatStartDate(tournament.start_date)}</p>
+
+													</span>
+													{/* <Items_Countdown_timer time={countdownTime} /> */}
 												</div>
 											</div>
 
