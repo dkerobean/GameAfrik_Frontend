@@ -12,8 +12,12 @@ import Likes from '../../components/likes';
 import Meta from '../../components/Meta';
 import { useDispatch } from 'react-redux';
 import { bidsModalShow } from '../../redux/counterSlice';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Item = () => {
+	const [tournaments, setTournaments] = useState([]);
+  	const [joinedTournaments, setJoinedTournaments] = useState([]);
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const uuid = router.query.item;
@@ -48,13 +52,113 @@ const Item = () => {
     }, [uuid, backendUrl]);
 
 	function formatStartDate(startDate) {
-		const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZone: 'UTC' };
+		const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC' };
 		return new Date(startDate).toLocaleString('en-US', options);
-	}
+}
+
+// handle leave and register tournament
+
+const fetchTournaments = async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/tournaments/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setTournaments(data);
+      } else {
+        throw new Error("Failed to fetch tournaments");
+      }
+    } catch (error) {
+      console.error("Error fetching tournaments:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTournaments();
+    fetchJoinedTournaments();
+  }, []);
+
+  const fetchJoinedTournaments = async () => {
+	const accessToken = localStorage.getItem("accessToken");
+    try {
+      const response = await fetch(`${backendUrl}/api/tournaments/joined/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setJoinedTournaments(data);
+      } else {
+        throw new Error("Failed to fetch joined tournaments");
+      }
+    } catch (error) {
+      console.error("Error fetching joined tournaments:", error);
+    }
+  };
+
+  const handleRegister = async (tournamentId) => {
+	const accessToken = localStorage.getItem("accessToken");
+    try {
+      const response = await fetch(`${backendUrl}/api/tournament/join/${tournamentId}/`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tournamentId }),
+      });
+      if (response.ok) {
+        fetchJoinedTournaments()
+        fetchTournaments();
+        toast.success("Successfully registered for the tournament!");
+
+      } else {
+        throw new Error("Failed to register for the tournament");
+      }
+    } catch (error) {
+      console.error("Error registering for the tournament:", error);
+      toast.error("Failed to register for the tournament");
+    }
+  };
+
+  const handleLeave = async (tournamentId) => {
+	const accessToken = localStorage.getItem("accessToken");
+    try {
+      const response = await fetch(`${backendUrl}/api/tournament/leave/${tournamentId}/`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response.ok) {
+        toast.success("Successfully left the tournament!");
+        fetchTournaments();
+
+
+        // Remove the tournament from the joined tournaments list
+        setJoinedTournaments(joinedTournaments.filter(tournament => tournament.uuid !== tournamentId));
+      } else {
+        throw new Error("Failed to leave the tournament");
+      }
+    } catch (error) {
+      console.error("Error leaving the tournament:", error);
+      toast.error("Failed to leave the tournament");
+    }
+  };
+
+  	// Check if the user has joined this tournament
+	const isJoined = joinedTournaments.some(tournament => tournament.uuid === uuid);
+	console.log("Joined the tournament", isJoined);
+	console.log("joined", joinedTournaments);
+
 
 	// Calculate countdownTime only if tournament is available
     const countdownTime = tournament ? new Date().getTime() - new Date(tournament.start_date).getTime() : null;
-	console.log(countdownTime);
+
 	return (
 		<>
 			<Meta title={`${tournament.name} || GamingAfrik`} />
@@ -287,7 +391,7 @@ const Item = () => {
 													<span className="js-countdown-ends-label text-jacarta-400 dark:text-jacarta-300 text-sm">
 														Tournament Begins In
 													</span>
-													<span className="text-jacarta-400 mt-4 dark:text-jacarta-300 text-sm">
+													<span className="text-jacarta-400 mt-4 dark:text-jacarta-300 text-lg">
 													<p>{formatStartDate(tournament.start_date)}</p>
 
 													</span>
@@ -296,12 +400,21 @@ const Item = () => {
 											</div>
 
 											<Link href="#">
+											{isJoined ? (
 												<button
 													className="bg-accent shadow-accent-volume hover:bg-accent-dark inline-block w-full rounded-full py-3 px-8 text-center font-semibold text-white transition-all"
-													onClick={() => dispatch(bidsModalShow())}
+													onClick={() => handleLeave(tournament.uuid)}
+												>
+													Leave
+												</button>
+												) : (
+													<button
+													className="bg-accent shadow-accent-volume hover:bg-accent-dark inline-block w-full rounded-full py-3 px-8 text-center font-semibold text-white transition-all"
+													onClick={() => handleRegister(tournament.uuid)}
 												>
 													Register
 												</button>
+												)}
 											</Link>
 										</div>
 										{/* <!-- end bid --> */}
@@ -310,12 +423,13 @@ const Item = () => {
 								</div>
 					<ItemsTabs />
 				</div>
+				<ToastContainer />
 			</section>
 			{/* <!-- end item --> */}
 
 			<More_items />
 		</>
-	);
+		);
 };
 
 export default Item;
