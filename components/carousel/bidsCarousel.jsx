@@ -38,6 +38,16 @@ const BidsCarousel = () => {
     fetchBidsData();
   }, []);
 
+  const handleViewButtonClick = (uuid) => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      router.push("/login");
+    } else {
+      // Redirect to the tournament page
+      router.push(`/item/${uuid}`);
+    }
+  };
+
   return (
     <>
       <Swiper
@@ -66,7 +76,7 @@ const BidsCarousel = () => {
         className=" card-slider-4-columns !py-5"
       >
         {tournament.map((item) => {
-          const { id, image, name, entry_fee, prize_pool, number_of_participants} =
+          const { id, image, name, entry_fee, prize_pool, uuid, number_of_participants} =
             item;
           const itemLink = image
             .split("/")
@@ -81,7 +91,7 @@ const BidsCarousel = () => {
               <article>
                 <div className="dark:bg-jacarta-700 dark:border-jacarta-700 border-jacarta-100 rounded-2xl block border bg-white p-[1.1875rem] transition-shadow hover:shadow-lg text-jacarta-500">
                   <figure>
-                    <Link href={"/item/" + itemLink}>
+                    <Link href={`/item/${uuid}`}>
                       <a>
                         <div className="w-full">
                           <Image
@@ -99,7 +109,7 @@ const BidsCarousel = () => {
                     </Link>
                   </figure>
                   <div className="mt-4 flex items-center justify-between">
-                    <Link href={"/item/" + itemLink}>
+                    <Link href={`/item/${uuid}`}>
                       <a>
                         <span className="font-display text-jacarta-700 hover:text-accent text-base dark:text-white">
                           {name}
@@ -131,7 +141,7 @@ const BidsCarousel = () => {
                     <button
                       type="button"
                       className="text-accent font-display text-sm font-semibold"
-                      onClick={() => dispatch(bidsModalShow())}
+                      onClick={() => handleViewButtonClick(uuid)}
                     >
                       View
                     </button>
