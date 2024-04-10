@@ -5,13 +5,13 @@ import Properties from "./Properties";
 import Activity_tab from "./Activity_tab";
 import Price_history from "./Price_history";
 
-const ItemsTabs = () => {
+const ItemsTabs = ({ tournament } ) => {
   const [tabsActive, setTabsActive] = useState(1);
   const tabsHeadText = [
     {
       id: 1,
-      text: "Offers",
-      icon: "offers",
+      text: "players",
+      icon: "user",
     },
     {
       id: 2,
@@ -34,6 +34,9 @@ const ItemsTabs = () => {
       icon: "price",
     },
   ];
+
+  const tournamentData = tournament;
+
   return (
     <>
       <div className="scrollbar-custom mt-14 overflow-x-auto rounded-lg">
@@ -65,7 +68,7 @@ const ItemsTabs = () => {
           </TabList>
 
           <TabPanel className="tab-content">
-            <OfferTab />
+            {tournament && <OfferTab tournamentData={tournamentData}/> }
           </TabPanel>
           <TabPanel>
             <Properties />

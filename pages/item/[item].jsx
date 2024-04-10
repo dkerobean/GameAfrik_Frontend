@@ -420,7 +420,7 @@ const fetchTournaments = async () => {
 						</div>
 						{/* <!-- end details --> */}
 					</div>
-					<ItemsTabs />
+					{tournament && <ItemsTabs tournament={tournament} />} {/* Pass tournament details as props */}
 				</div>
 				<ToastContainer />
 			</section>
