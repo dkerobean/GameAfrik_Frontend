@@ -112,8 +112,8 @@ const fetchTournaments = async () => {
         body: JSON.stringify({ tournamentId }),
       });
       if (response.ok) {
+		fetchTournaments();
         fetchJoinedTournaments()
-        fetchTournaments();
         toast.success("Successfully registered for the tournament!");
 
       } else {
@@ -137,6 +137,8 @@ const fetchTournaments = async () => {
       if (response.ok) {
         toast.success("Successfully left the tournament!");
         fetchTournaments();
+		fetchJoinedTournaments();
+
 
 
         // Remove the tournament from the joined tournaments list
@@ -420,7 +422,7 @@ const fetchTournaments = async () => {
 						</div>
 						{/* <!-- end details --> */}
 					</div>
-					{tournament && <ItemsTabs tournament={tournament} />} {/* Pass tournament details as props */}
+					{tournament && <ItemsTabs tournament={tournament} />}
 				</div>
 				<ToastContainer />
 			</section>
