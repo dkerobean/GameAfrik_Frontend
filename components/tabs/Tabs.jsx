@@ -36,6 +36,7 @@ const ItemsTabs = ({ tournament } ) => {
   ];
 
   const tournamentData = tournament;
+  console.log("here is the tournament data", tournamentData)
 
   return (
     <>
@@ -68,7 +69,7 @@ const ItemsTabs = ({ tournament } ) => {
           </TabList>
 
           <TabPanel className="tab-content">
-            {tournament && <OfferTab tournamentData={tournamentData}/> }
+            {tournament && <OfferTab tournamentData={tournamentData} />}
           </TabPanel>
           <TabPanel>
             <Properties />

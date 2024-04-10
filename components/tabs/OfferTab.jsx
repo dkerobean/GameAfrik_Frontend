@@ -16,11 +16,10 @@ const Index = ({ tournamentData }) => {
 		dispatch(collectRenkingData(rankings_data));
 	}, [dispatch]);
 
-	console.log("tournament data: " + tournamentData)
+	console.log("tournament data 11: " + tournamentData)
 
 	return (
 		<>
-			<Meta title="Rankings || Xhibiter | NFT Marketplace Next.js Template" />
 			{/* <!-- Rankings --> */}
 			<section className="relative">
 				<div className="container">
@@ -53,7 +52,7 @@ const Index = ({ tournamentData }) => {
 								</div>
 								<div className="w-[12%] py-3 px-4" role="columnheader">
 									<span className="text-jacarta-700 dark:text-jacarta-100 w-full overflow-hidden text-ellipsis">
-										Floor Price
+										Skill level
 									</span>
 								</div>
 								<div className="w-[12%] py-3 px-4" role="columnheader">
@@ -67,26 +66,35 @@ const Index = ({ tournamentData }) => {
 									</span>
 								</div>
 							</div>
-							{filteredRenkingData.slice(0, 7).map((item) => {
-								const {
-									id,
-									image,
-									title,
-									volume,
-									h24,
-									d7,
-									h24Color,
-									d7Color,
-									price,
-									owners,
-									items,
-									icon,
-								} = item;
-								const itemLink = image.split('/').slice(-1).toString().replace('.jpg', '');
-								// console.log(item.category.art);
+							{tournamentData &&
+								tournamentData.participants &&
+								tournamentData.participants.map((participant, pIndex) => {
+									const {
+										id,
+										image,
+										title,
+										volume,
+										h24,
+										d7,
+										h24Color,
+										d7Color,
+										price,
+										owners,
+										items,
+										icon,
+										avatar,
+										username,
+										skill_level,
+										is_verified,
+
+									} = participant;
+
+								const avatarUrl = process.env.NEXT_PUBLIC_APP_BACKEND_URL + avatar;
+
 
 								return (
-									<Link href={/user/ + itemLink} key={id}>
+
+									<Link href="#">
 										<a className="flex transition-shadow hover:shadow-lg" role="row">
 											<div
 												className="dark:border-jacarta-600 border-jacarta-100 flex w-[28%] items-center border-t py-4 px-4"
@@ -96,8 +104,8 @@ const Index = ({ tournamentData }) => {
 												<figure className="relative mr-2 w-8 shrink-0 self-start lg:mr-5 lg:w-12">
 													{/* <img src={image} alt={title} className="rounded-2lg" loading="lazy" /> */}
 													<Image
-														src={image}
-														alt={title}
+														src={avatarUrl}
+														alt="user-image"
 														height={32}
 														width={32}
 														layout="responsive"
@@ -105,7 +113,7 @@ const Index = ({ tournamentData }) => {
 														className="rounded-2lg"
 													/>
 
-													{icon && (
+													{is_verified && (
 														<div
 															className="dark:border-jacarta-600 bg-green absolute -right-2 -bottom-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white"
 															data-tippy-content="Verified Collection"
@@ -124,7 +132,7 @@ const Index = ({ tournamentData }) => {
 													)}
 												</figure>
 												<span className="font-display text-jacarta-700 text-sm font-semibold dark:text-white">
-													{title}
+													{username}
 												</span>
 											</div>
 											<div
@@ -136,19 +144,19 @@ const Index = ({ tournamentData }) => {
 														<use xlinkHref="/icons.svg#icon-ETH"></use>
 													</svg>
 												</span>
-												<span className="text-sm font-medium tracking-tight">{volume}</span>
+												<span className="text-sm font-medium tracking-tight">rank</span>
 											</div>
 											<div
 												className="dark:border-jacarta-600 border-jacarta-100 flex w-[12%] items-center border-t py-4 px-4"
 												role="cell"
 											>
-												<span className={`text-${h24Color}`}>{h24}</span>
+												<span className="text-green">12</span>
 											</div>
 											<div
 												className="dark:border-jacarta-600 border-jacarta-100 flex w-[12%] items-center border-t py-4 px-4"
 												role="cell"
 											>
-												<span className={`text-${d7Color}`}>{d7}</span>
+												<span className="text-red">2</span>
 											</div>
 											<div
 												className="dark:border-jacarta-600 border-jacarta-100 flex w-[12%] items-center border-t py-4 px-4"
@@ -159,7 +167,7 @@ const Index = ({ tournamentData }) => {
 														<use xlinkHref="/icons.svg#icon-ETH"></use>
 													</svg>
 												</span>
-												<span className="text-sm font-medium tracking-tight">{price}</span>
+												<span className="text-sm font-medium tracking-tight">{skill_level}</span>
 											</div>
 											<div
 												className="dark:border-jacarta-600 border-jacarta-100 flex w-[12%] items-center border-t py-4 px-4"
