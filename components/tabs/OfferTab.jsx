@@ -71,14 +71,6 @@ const Index = ({ tournamentData }) => {
 								tournamentData.participants.map((participant, pIndex) => {
 									const {
 										id,
-										image,
-										title,
-										volume,
-										h24,
-										d7,
-										h24Color,
-										d7Color,
-										price,
 										owners,
 										items,
 										icon,
@@ -86,6 +78,7 @@ const Index = ({ tournamentData }) => {
 										username,
 										skill_level,
 										is_verified,
+										rank,
 
 									} = participant;
 
@@ -144,7 +137,7 @@ const Index = ({ tournamentData }) => {
 														<use xlinkHref="/icons.svg#icon-ETH"></use>
 													</svg>
 												</span>
-												<span className="text-sm font-medium tracking-tight">rank</span>
+												<span className="text-sm font-medium tracking-tight">{rank}</span>
 											</div>
 											<div
 												className="dark:border-jacarta-600 border-jacarta-100 flex w-[12%] items-center border-t py-4 px-4"
