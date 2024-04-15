@@ -76,11 +76,11 @@ const CategoryItem = () => {
         toast.success("Successfully registered for the tournament!");
 
       } else {
-        throw new Error("Failed to register for the tournament");
+        throw new Error(response.error);
       }
     } catch (error) {
       console.error("Error registering for the tournament:", error);
-      toast.error("Failed to register for the tournament");
+      toast.error(error);
     }
   };
 
