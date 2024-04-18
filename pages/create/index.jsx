@@ -12,33 +12,43 @@ import { useDispatch } from "react-redux";
 import { showPropatiesModal } from "../../redux/counterSlice";
 import Meta from "../../components/Meta";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Create = () => {
   const [accessToken, setAccessToken] = useState("");
   const [gamesData, setGamesData] = useState([]);
+  const [gameModes, setGameModes] = useState([]);
+  const [gameTypes, setGameTypes] = useState([]);
+  const [gameFormats, setGameFormats] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
     rules: "",
-    image: null,
+    image: null, // Initialize image field to null
     game: "",
-    gameType: "",
-    gameMode: "",
-    gameFormat: "",
-    entryFee: "",
-    prizeMoney: "",
-    participants: "",
-    startDate: "",
-    endDate: "",
+    game_type: "",
+    game_mode: "",
+    game_format: "",
+    entry_fee: "",
+    prize_pool: "",
+    number_of_participants: "",
+    start_date: "",
+    end_date: "",
   });
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+    // Fetch access token from local storage
+    const storedAccessToken = localStorage.getItem("accessToken");
+    if (storedAccessToken) {
+      setAccessToken(storedAccessToken);
+    }
+
     // Fetch games data
     const fetchGamesData = async () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/games/`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${storedAccessToken}`,
           },
         });
         setGamesData(response.data);
@@ -48,11 +58,44 @@ const Create = () => {
     };
     fetchGamesData();
 
-    // Retrieve access token from local storage
-    const storedAccessToken = localStorage.getItem("accessToken");
-    if (storedAccessToken) {
-      setAccessToken(storedAccessToken);
-    }
+    const fetchGameModes = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/tournament/game_modes/"
+        );
+        setGameModes(response.data);
+      } catch (error) {
+        console.error("Error fetching game modes:", error);
+      }
+    };
+
+    const fetchGameTypes = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/tournament/game_types/"
+        );
+        setGameTypes(response.data);
+      } catch (error) {
+        console.error("Error fetching game types:", error);
+      }
+    };
+
+    const fetchGameFormats = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/tournament/game_formats/"
+        );
+        setGameFormats(response.data);
+      } catch (error) {
+        console.error("Error fetching game formats:", error);
+      }
+    };
+
+    // Execute all fetch functions
+    fetchGameModes();
+    fetchGameTypes();
+    fetchGameFormats();
+
   }, []);
 
   const handleChange = (e) => {
@@ -62,32 +105,59 @@ const Create = () => {
     });
   };
 
-  const handleFileChange = (file) => {
+
+const handleFileChange = (files) => {
+  const file = files[0];
+  if (file instanceof File) {
     setFormData({
       ...formData,
       image: file,
     });
-  };
+  }
 
-  const handleSubmit = () => {
-    // Submit form data to the Django API endpoint
-    axios.post(`${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournaments/create/`, formData, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-    .then(response => {
-      // Handle successful response
-      console.log("Tournament created successfully:", response.data);
-    })
-    .catch(error => {
-      // Handle error
-      console.error("Error creating tournament:", error);
-    });
-  };
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Create a new FormData instance
+  const data = new FormData();
+
+  // Append all form fields to the form data
+  Object.keys(formData).forEach((key) => {
+    data.append(key, formData[key]);
+  });
+
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournament/create/`,
+      data, // Send the form data
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // Add this line to set the content type as form data
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    if (response.status === 201) {
+      toast.success(`Tournament created successfully`);
+    } else {
+      toast.error("Error creating tournament");
+    }
+  } catch (error) {
+    console.error("Error creating tournament:", error);
+    toast.error("Error creating tournament");
+    console.log("formData error", formData);
+  }
+};
+
+
+
   return (
   <div>
-    <Meta title="Create || Xhibiter | NFT Marketplace Next.js Template" />
+    <Meta title="Create" />
     {/* Create */}
     <section className="relative py-24">
       <picture className="pointer-events-none absolute inset-0 -z-10 dark:hidden">
@@ -154,34 +224,17 @@ const Create = () => {
                 </p>
               )}
               <div className="dark:bg-jacarta-700 dark:border-jacarta-600 border-jacarta-100 group relative flex max-w-md flex-col items-center justify-center rounded-lg border-2 border-dashed bg-white py-20 px-5 text-center">
-                <div className="relative z-10 cursor-pointer">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    height="24"
-                    className="fill-jacarta-500 mb-4 inline-block dark:fill-white"
-                  >
-                    <path fill="none" d="M0 0h24v24H0z" />
-                    <path d="M16 13l6.964 4.062-2.973.85 2.125 3.681-1.732 1-2.125-3.68-2.223 2.15L16 13zm-2-7h2v2h5a1 1 0 0 1 1 1v4h-2v-3H10v10h4v2H9a1 1 0 0 1-1-1v-5H6v-2h2V9a1 1 0 0 1 1-1h5V6zM4 14v2H2v-2h2zm0-4v2H2v-2h2zm0-4v2H2V6h2zm0-4v2H2V2h2zm4 0v2H6V2h2zm4 0v2h-2V2h2zm4 0v2h-2V2h2z" />
-                  </svg>
-                  <p className="dark:text-jacarta-300 mx-auto max-w-xs text-xs">
-                    JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV, OGG, GLB, GLTF. Max size: 10 MB
-                  </p>
-                </div>
-                <div className="dark:bg-jacarta-600 bg-jacarta-50 absolute inset-4 cursor-pointer rounded opacity-0 group-hover:opacity-100 ">
-                  <FileUploader
-                    handleChange={handleFileChange}
-                    name="file"
-                    types={[
-                      "JPG", "PNG", "GIF", "SVG", "MP4", "WEBM",
-                      "MP3", "WAV", "OGG", "GLB", "GLTF"
-                    ]}
-                    classes="file-drag"
-                    maxSize={10 * 1024 * 1024} // 10 MB
-                    minSize={0}
-                  />
-                </div>
+                <input
+                  type="file"
+                  name="image"
+                  id="fileInput"
+                  accept=".jpg, .png, .svg, .webm"
+                  onChange={(e) => handleFileChange(e.target.files)}
+                  className="hidden"
+                />
+              <label htmlFor="fileInput" className="cursor-pointer dark:text-jacarta-300">
+                {formData.image ? `File selected: ${formData.image.name}` : "Choose file"}
+              </label>
               </div>
             </div>
 
@@ -215,13 +268,17 @@ const Create = () => {
                 </label>
                 <select
                   id="gameType"
-                  name="gameType"
-                  value={formData.gameType}
+                  name="game_type"
+                  value={formData.game_type}
                   onChange={handleChange}
                   className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
                 >
                   <option value="">Select Game Type</option>
-                  {/* Render game types options */}
+                  {gameTypes.map((game) => (
+                  <option key={game.id} value={game.name}>
+                    {game.name}
+                  </option>
+                ))}
                 </select>
               </div>
               {/* Game Mode */}
@@ -231,13 +288,17 @@ const Create = () => {
                 </label>
                 <select
                   id="gameMode"
-                  name="gameMode"
-                  value={formData.gameMode}
+                  name="game_mode"
+                  value={formData.game_mode}
                   onChange={handleChange}
                   className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
                 >
                   <option value="">Select Game Mode</option>
-                  {/* Render game modes options */}
+                  {gameModes.map((game) => (
+                  <option key={game.id} value={game.name}>
+                    {game.name}
+                  </option>
+                ))}
                 </select>
               </div>
               {/* Game Format */}
@@ -247,13 +308,17 @@ const Create = () => {
                 </label>
                 <select
                   id="gameFormat"
-                  name="gameFormat"
-                  value={formData.gameFormat}
+                  name="game_format"
+                  value={formData.game_format}
                   onChange={handleChange}
                   className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
                 >
                   <option value="">Select Game Format</option>
-                  {/* Render game formats options */}
+                  {gameFormats.map((game) => (
+                  <option key={game.id} value={game.name}>
+                    {game.name}
+                  </option>
+                ))}
                 </select>
               </div>
             </div>
@@ -266,8 +331,8 @@ const Create = () => {
               <input
                 type="number"
                 id="entryFee"
-                name="entryFee"
-                value={formData.entryFee}
+                name="entry_fee"
+                value={formData.entry_fee}
                 onChange={handleChange}
                 className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
                 placeholder="Entry Fee"
@@ -282,8 +347,8 @@ const Create = () => {
               <input
                 type="number"
                 id="prizeMoney"
-                name="prizeMoney"
-                value={formData.prizeMoney}
+                name="prize_pool"
+                value={formData.prize_pool}
                 onChange={handleChange}
                 className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
                 placeholder="Prize Money"
@@ -298,8 +363,8 @@ const Create = () => {
               <input
                 type="number"
                 id="participants"
-                name="participants"
-                value={formData.participants}
+                name="number_of_participants"
+                value={formData.number_of_participants}
                 onChange={handleChange}
                 className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
                 placeholder="Number of Participants"
@@ -314,8 +379,8 @@ const Create = () => {
               <input
                 type="datetime-local"
                 id="startDate"
-                name="startDate"
-                value={formData.startDate}
+                name="start_date"
+                value={formData.start_date}
                 onChange={handleChange}
                 className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
               />
@@ -329,8 +394,8 @@ const Create = () => {
               <input
                 type="datetime-local"
                 id="endDate"
-                name="endDate"
-                value={formData.endDate}
+                name="end_date"
+                value={formData.end_date}
                 onChange={handleChange}
                 className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
               />
@@ -347,6 +412,7 @@ const Create = () => {
           </form>
         </div>
       </div>
+       <ToastContainer />
     </section>
     {/* End create */}
   </div>
