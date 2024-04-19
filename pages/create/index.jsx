@@ -126,7 +126,7 @@ const handleSubmit = async (e) => {
   // Append all form fields to the form data
   Object.keys(formData).forEach((key) => {
     data.append(key, formData[key]);
-  });
+  });     
 
   try {
     const response = await axios.post(

@@ -8,6 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Auctions_dropdown from "../dropdown/Auctions_dropdown";
 
 const CategoryItem = () => {
   const [tournaments, setTournaments] = useState([]);
@@ -150,7 +151,7 @@ const CategoryItem = () => {
                       <img
                         src={getImageUrl(host.avatar)} // Use getImageUrl function to get avatar URL
                         alt="Host"
-                        className="dark:border-jacarta-600 hover:border-accent dark:hover:border-accent h-6 w-6 rounded-full border-2 border-white"
+                        className="dark:border-jacarta-600 hover:border-accent dark:hover:border-accent h-6  w-6 rounded-full border-2 border-white"
                       />
                     </Tippy>
                     {participants.map((participant, index) => (
@@ -173,6 +174,7 @@ const CategoryItem = () => {
                 <span className="font-display text-jacarta-700 text-base dark:text-white">
                   {name}
                 </span>
+                {/* <Auctions_dropdown classes="dark:hover:bg-jacarta-600 dropup hover:bg-jacarta-100 rounded-full " /> */}
               </div>
               <div className="mt-2 text-sm">
                 <span className="dark:text-jacarta-200 text-jacarta-700 mr-1">

@@ -11,6 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
+    "@headlessui/react": "^1.7.19",
     "@material-tailwind/react": "^1.2.4",
     "@mui/material": "^5.8.7",
     "@reduxjs/toolkit": "^1.8.2",
@@ -30,6 +31,7 @@
     "react-drag-drop-files": "^2.3.7",
     "react-icomoon": "^2.5.4",
     "react-icons": "^4.4.0",
+    "react-modal": "^3.16.1",
     "react-modal-video": "^1.2.10",
     "react-redux": "^8.0.2",
     "react-tabs": "^5.1.0",
