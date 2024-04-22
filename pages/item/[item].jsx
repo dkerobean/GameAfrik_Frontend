@@ -10,11 +10,11 @@
 	import More_items from './more_items';
 	import Likes from '../../components/likes';
 	import Meta from '../../components/Meta';
-	import { useDispatch } from 'react-redux';
-	import { bidsModalShow } from '../../redux/counterSlice';
+	import { useDispatch, useSelector } from 'react-redux';
 	import { ToastContainer, toast } from "react-toastify";
 	import "react-toastify/dist/ReactToastify.css";
-	import ConfirmModal from '../../components/categories/confirmationDialog';
+	import {BuyModal} from '../../components/modal/buyModal';
+	import { buyModalShow } from '../../redux/counterSlice';
 
 	const Item = () => {
 		const [tournaments, setTournaments] = useState([]);
@@ -27,8 +27,36 @@
 		const [imageModal, setImageModal] = useState(false);
 		const [tournament, setTournament] = useState([]);
 
-		const [showDeleteModal, setShowDeleteModal] = useState(false);
-    	const [showEditModal, setShowEditModal] = useState(false);
+		const [showModal, setShowModal] = useState(false);
+		const { buyModal } = useSelector((state) => state.counter);
+
+		const [userUuid, setUserUuid] = useState(null);
+
+		useEffect(() => {
+			const accessToken = localStorage.getItem("accessToken");
+			const fetchUserUuid = async () => {
+				try {
+					const response = await fetch(`${backendUrl}/api/user/profile/`, {
+						headers: {
+							Authorization: `Bearer ${accessToken}`,
+						},
+					});
+					if (!response.ok) {
+						throw new Error('Failed to fetch user profile');
+					}
+					const data = await response.json();
+					setUserUuid(data.uuid);
+					console.log("user id", userUuid)
+				} catch (error) {
+					console.error('Error fetching user profile:', error);
+				}
+			};
+
+			if (accessToken) {
+				fetchUserUuid();
+			}
+		}, );
+
 
 		useEffect(() => {
 			const accessToken = localStorage.getItem("accessToken");
@@ -176,8 +204,14 @@
 			// Show success toast
 			toast.success('Tournament edited successfully');
 			// Close the modal
-			setShowEditModal(false);
+			setShowModal(false);
 		};
+
+		// check if current user is Host
+		const isHost = tournament?.host?.uuid === userUuid;
+		console.log("isHost", isHost);
+		console.log("host uuid", tournament?.host?.uuid);
+		console.log("user uuid", userUuid);
 
 
 		// Calculate countdownTime only if tournament is available
@@ -419,7 +453,7 @@
 
 											</span>
 											{/* <Items_Countdown_timer time={countdownTime} /> */}
-										</div>2
+										</div>
 									</div>
 
 									<Link href="#">
@@ -442,37 +476,23 @@
 								</div>
 								{/* <!-- end bid --> */}
 
-								{/* Delete Button */}
-								<button
-									className="bg-accent shadow-accent-volume hover:bg-accent-dark inline-block w-half rounded-half py-3 px-5 text-center font-small text-white transition-all"
-									onClick={() => setShowDeleteModal(true)}>
-									Delete
-								</button>
+								{isHost && (
+										<div className="mt-5 center text-center">
+											<button
+												className="bg-accent mx-3 shadow-accent-volume hover:bg-accent-dark inline-block w-half rounded-half py-3 px-5 text-center font-small text-white transition-all"
+												onClick={handleEdit}
+											>
+												Edit
+											</button>
+											<button
+												className="bg-accent shadow-accent-volume hover:bg-accent-dark inline-block w-half rounded-half py-3 px-5 text-center font-small text-white transition-all"
+												onClick={handleDelete}
+											>
+												Delete
+											</button>
+										</div>
+									)}
 
-								{/* Edit Button */}
-								<button
-									className="bg-accent shadow-accent-volume hover:bg-accent-dark inline-block w-half rounded-full py-3 px-5 text-center font-semibold text-white transition-all"
-									onClick={() => setShowEditModal(true)}
-								>
-									Edit
-								</button>
-
-								{/* Delete Modal */}
-								<ConfirmModal
-									isOpen={showDeleteModal}
-									onRequestClose={() => setShowDeleteModal(false)}
-									onConfirm={handleDelete}
-									title="Confirm Delete"
-									message="Are you sure you want to delete this tournament?"
-								/>
-
-								{/* Edit Modal */}
-								{/* <Modal
-									isOpen={showEditModal}
-									onRequestClose={() => setShowEditModal(false)}
-									title="Edit Tournament"
-									// Implement your edit form or content here...
-								/> */}
 							</div>
 							{/* <!-- end details --> */}
 						</div>

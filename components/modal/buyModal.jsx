@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { buyModalHide } from "../../redux/counterSlice";
 import { Confirm_checkout } from "../metamask/Metamask";
 
+
 const BuyModal = () => {
   const { buyModal } = useSelector((state) => state.counter);
   const dispatch = useDispatch();
@@ -16,7 +17,7 @@ const BuyModal = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="buyNowModalLabel">
-                Complete checkout
+                Complete checkout1
               </h5>
               <button
                 type="button"
