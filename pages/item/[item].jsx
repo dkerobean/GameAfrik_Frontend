@@ -14,12 +14,11 @@
 	import { ToastContainer, toast } from "react-toastify";
 	import "react-toastify/dist/ReactToastify.css";
 	import {BuyModal} from '../../components/modal/buyModal';
-	import { buyModalShow } from '../../redux/counterSlice';
+	import { buyModalHide, buyModalShow } from '../../redux/counterSlice';
 
 	const Item = () => {
 		const [tournaments, setTournaments] = useState([]);
 		const [joinedTournaments, setJoinedTournaments] = useState([]);
-		const dispatch = useDispatch();
 		const router = useRouter();
 		const uuid = router.query.item;
 		const backendUrl = process.env.NEXT_PUBLIC_APP_BACKEND_URL;
@@ -27,13 +26,15 @@
 		const [imageModal, setImageModal] = useState(false);
 		const [tournament, setTournament] = useState([]);
 
-		const [showModal, setShowModal] = useState(false);
-		const { buyModal } = useSelector((state) => state.counter);
+
+		const dispatch = useDispatch();
+  		const { buyModal } = useSelector((state) => state.counter);
 
 		const [userUuid, setUserUuid] = useState(null);
 
 		useEffect(() => {
 			const accessToken = localStorage.getItem("accessToken");
+
 			const fetchUserUuid = async () => {
 				try {
 					const response = await fetch(`${backendUrl}/api/user/profile/`, {
@@ -56,6 +57,7 @@
 				fetchUserUuid();
 			}
 		}, );
+
 
 
 		useEffect(() => {
@@ -189,29 +191,55 @@
 		console.log("Joined the tournament", isJoined);
 		console.log("joined", joinedTournaments);
 
-		// Function to handle delete action
-		const handleDelete = () => {
-			// Your delete logic here...
-			// Show success toast
-			toast.success('Tournament deleted successfully');
-			// Close the modal
-			setShowDeleteModal(false);
-		};
-
-		// Function to handle edit action
-		const handleEdit = () => {
-			// Your edit logic here...
-			// Show success toast
-			toast.success('Tournament edited successfully');
-			// Close the modal
-			setShowModal(false);
-		};
-
 		// check if current user is Host
 		const isHost = tournament?.host?.uuid === userUuid;
 		console.log("isHost", isHost);
 		console.log("host uuid", tournament?.host?.uuid);
 		console.log("user uuid", userUuid);
+
+		const tournamentUuid = tournament.uuid;
+
+		// Function to handle delete action
+		const handleDelete = async () => {
+			const accessToken = localStorage.getItem("accessToken");
+			try {
+				// Perform delete request using Axios
+				const response = await fetch(`${backendUrl}/api/tournaments/leave/${tournamentUuid}/`, {
+					method: "DELETE",
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				});
+
+				if (response.ok) {
+					// Hide modal on success
+					dispatch(buyModalHide());
+					// Show success toast
+					toast.success('Tournament deleted successfully');
+				} else {
+					throw new Error('Failed to delete tournament');
+				}
+			} catch (error) {
+				console.error('Error deleting tournament:', error);
+				// Show error toast
+				toast.error('Failed to delete tournament');
+			}
+		};
+
+		const handleBuyModalShow = () => {
+		// Dispatch the buyModalShow action creator with the tournamentUuid as payload
+		dispatch(buyModalShow(tournamentUuid));
+		};
+
+		// Function to handle edit action
+		const handleEdit = () => {
+			router.push({
+				pathname: '/edit',
+				query: {
+					tournamentUuid: tournament.uuid,
+				},
+			});
+		};
 
 
 		// Calculate countdownTime only if tournament is available
@@ -476,6 +504,7 @@
 								</div>
 								{/* <!-- end bid --> */}
 
+
 								{isHost && (
 										<div className="mt-5 center text-center">
 											<button
@@ -486,14 +515,14 @@
 											</button>
 											<button
 												className="bg-accent shadow-accent-volume hover:bg-accent-dark inline-block w-half rounded-half py-3 px-5 text-center font-small text-white transition-all"
-												onClick={handleDelete}
-											>
+												onClick={handleDelete} >
 												Delete
 											</button>
 										</div>
 									)}
 
 							</div>
+
 							{/* <!-- end details --> */}
 						</div>
 						{tournament && <ItemsTabs tournament={tournament} />}

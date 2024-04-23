@@ -1,13 +1,49 @@
-import Link from "next/link";
-import React from "react";
+import { useState } from 'react';
+import axios from 'axios';
 import { useSelector, useDispatch } from "react-redux";
 import { buyModalHide } from "../../redux/counterSlice";
-import { Confirm_checkout } from "../metamask/Metamask";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-
-const BuyModal = () => {
-  const { buyModal } = useSelector((state) => state.counter);
+const BuyModal = ( {tournamentUuid} ) => {
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const { buyModal } = useSelector((state) => state.counter);
+  const backendUrl = process.env.NEXT_PUBLIC_APP_BACKEND_URL;
+
+  const handleDelete = async () => {
+    // Show loading indicator
+    setIsLoading(true);
+
+    console.log("Delete", tournamentUuid)
+
+    try {
+      // Perform delete request using Axios
+      const response = await axios.delete(`${backendUrl}/api/tournaments/leave/${tournamentUuid}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.status === 200) {
+        // Hide modal on success
+        dispatch(buyModalHide());
+        // Show success toast
+        toast.success('Tournament deleted successfully');
+      } else {
+        throw new Error('Failed to delete tournament');
+      }
+    } catch (error) {
+      console.error('Error deleting tournament:', error);
+      // Show error toast
+      toast.error('Failed to delete tournament');
+    } finally {
+      // Hide loading indicator
+      setIsLoading(false);
+    }
+  };
+
 
   return (
     <div>
@@ -17,7 +53,7 @@ const BuyModal = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="buyNowModalLabel">
-                Complete checkout1
+                Confirm Delete
               </h5>
               <button
                 type="button"
@@ -39,114 +75,27 @@ const BuyModal = () => {
 
             {/* <!-- Body --> */}
             <div className="modal-body p-6">
-              <div className="mb-2 flex items-center justify-between">
-                <span className="font-display text-jacarta-700 text-sm font-semibold dark:text-white">
-                  Item
-                </span>
-                <span className="font-display text-jacarta-700 text-sm font-semibold dark:text-white">
-                  Subtotal
-                </span>
-              </div>
-
-              <div className="dark:border-jacarta-600 border-jacarta-100 relative flex items-center border-t border-b py-4">
-                <figure className="mr-5 self-start">
-                  <img
-                    src="/images/avatars/avatar_2.jpg"
-                    alt="avatar 2"
-                    className="rounded-2lg"
-                    loading="lazy"
-                  />
-                </figure>
-
-                <div>
-                  <a href="collection.html" className="text-accent text-sm">
-                    Elon Musk #709
-                  </a>
-                  <h3 className="font-display text-jacarta-700 mb-1 text-base font-semibold dark:text-white">
-                    Lazyone Panda
-                  </h3>
-                  <div className="flex flex-wrap items-center">
-                    <span className="dark:text-jacarta-300 text-jacarta-500 mr-1 block text-sm">
-                      Creator Earnings: 5%
-                    </span>
-                    <span data-tippy-content="The creator of this collection will receive 5% of the sale total from future sales of this item.">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        width="24"
-                        height="24"
-                        className="dark:fill-jacarta-300 fill-jacarta-700 h-4 w-4"
-                      >
-                        <path fill="none" d="M0 0h24v24H0z" />
-                        <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM11 7h2v2h-2V7zm0 4h2v6h-2v-6z" />
-                      </svg>
-                    </span>
-                  </div>
-                </div>
-
-                <div className="ml-auto">
-                  <span className="mb-1 flex items-center whitespace-nowrap">
-                    <span data-tippy-content="ETH">
-                      <svg className="h-4 w-4">
-                        <use xlinkHref="/icons.svg#icon-ETH"></use>
-                      </svg>
-                    </span>
-                    <span className="dark:text-jacarta-100 text-sm font-medium tracking-tight">
-                      1.55 ETH
-                    </span>
-                  </span>
-                  <div className="dark:text-jacarta-300 text-right text-sm">
-                    $130.82
-                  </div>
-                </div>
-              </div>
-
-              {/* <!-- Total --> */}
-              <div className="dark:border-jacarta-600 border-jacarta-100 mb-2 flex items-center justify-between border-b py-2.5">
-                <span className="font-display text-jacarta-700 hover:text-accent font-semibold dark:text-white">
-                  Total
-                </span>
-                <div className="ml-auto">
-                  <span className="flex items-center whitespace-nowrap">
-                    <span data-tippy-content="ETH">
-                      <svg className="h-4 w-4">
-                        <use xlinkHref="/icons.svg#icon-ETH"></use>
-                      </svg>
-                    </span>
-                    <span className="text-green font-medium tracking-tight">
-                      1.55 ETH
-                    </span>
-                  </span>
-                  <div className="dark:text-jacarta-300 text-right">
-                    $130.82
-                  </div>
-                </div>
-              </div>
 
               {/* <!-- Terms --> */}
               <div className="mt-4 flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="buyNowTerms"
-                  className="checked:bg-accent dark:bg-jacarta-600 text-accent border-jacarta-200 focus:ring-accent/20 dark:border-jacarta-500 h-5 w-5 self-start rounded focus:ring-offset-0"
-                />
                 <label
                   htmlFor="buyNowTerms"
                   className="dark:text-jacarta-200 text-sm"
                 >
-                  By checking this box, I agree to {"Xhibiter's"}{" "}
-                  <Link href="/tarms">
-                    <a className="text-accent">Terms of Service</a>
-                  </Link>
+                  Are you sure you want to delete {"Xhibiter's"}{" "}
                 </label>
               </div>
             </div>
             {/* <!-- end body --> */}
 
             <div className="modal-footer">
-              <div className="flex items-center justify-center space-x-4">
-                <Confirm_checkout />
-              </div>
+              <button
+                className="bg-accent shadow-accent-volume hover:bg-accent-dark inline-block w-half rounded-half py-3 px-5 text-center font-small text-white transition-all"
+                onClick={handleDelete}
+                disabled={isLoading}
+              >
+              {isLoading ? 'Deleting...' : 'Delete'}
+            </button>
             </div>
           </div>
         </div>
