@@ -17,7 +17,7 @@
 	import { buyModalHide, buyModalShow } from '../../redux/counterSlice';
 
 	const Item = () => {
-		const [tournaments, setTournaments] = useState([]);
+		const [tournaments, setTournaments] = useState([]);	
 		const [joinedTournaments, setJoinedTournaments] = useState([]);
 		const router = useRouter();
 		const uuid = router.query.item;

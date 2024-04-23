@@ -2,8 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from 'next/router';
 
 const Edit = () => {
+
+  const router = useRouter();
+  const { tournamentUuid } = router.query;
+
   const [accessToken, setAccessToken] = useState("");
   const [gamesData, setGamesData] = useState([]);
   const [gameModes, setGameModes] = useState([]);
@@ -92,7 +97,7 @@ const Edit = () => {
     const fetchTournamentData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournament/single/5b148213-63d0-4b09-ac9d-0fbd84d0d176/`,
+          `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournament/single/${tournamentUuid}/`,
           {
             headers: {
               Authorization: `Bearer ${storedAccessToken}`,
@@ -101,19 +106,25 @@ const Edit = () => {
         );
         const tournamentData = response.data;
 
+        // Convert ISO 8601 format to datetime-local format
+      const startDate = tournamentData.start_date.replace("Z", "");
+      const endDate = tournamentData.end_date.replace("Z", "");
+
+       console.log(tournamentData)
         // Set form data with fetched tournament data
         setFormData({
           name: tournamentData.name,
           rules: tournamentData.rules,
-          game: tournamentData.game,
+          game: tournamentData.game.name,
           game_type: tournamentData.game_type,
           game_mode: tournamentData.game_mode,
           game_format: tournamentData.game_format,
           entry_fee: tournamentData.entry_fee,
           prize_pool: tournamentData.prize_pool,
           number_of_participants: tournamentData.number_of_participants,
-          start_date: tournamentData.start_date,
-          end_date: tournamentData.end_date,
+          start_date: startDate,
+          end_date: endDate,
+          image: tournamentData.image
         });
       } catch (error) {
         console.error("Error fetching tournament data:", error);
@@ -129,12 +140,23 @@ const Edit = () => {
     });
   };
 
+  const handleFileChange = (files) => {
+  const file = files[0];
+  if (file instanceof File) {
+    setFormData({
+      ...formData,
+      image: file,
+    });
+  }
+
+};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournament/edit/uuid/`,
+        `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournament/edit/${tournamentUuid}/`,
         formData,
         {
           headers: {
@@ -223,7 +245,7 @@ const Edit = () => {
                   </p>
                 ) : (
                   <p className="dark:text-jacarta-300 text-2xs mb-3">
-                    Drag or choose your file to upload
+                    Drag or choose your file to upload: {formData.image}
                   </p>
                 )}
                 <div className="dark:bg-jacarta-700 dark:border-jacarta-600 border-jacarta-100 group relative flex max-w-md flex-col items-center justify-center rounded-lg border-2 border-dashed bg-white py-20 px-5 text-center">
@@ -236,7 +258,7 @@ const Edit = () => {
                     className="hidden"
                   />
                   <label htmlFor="fileInput" className="cursor-pointer dark:text-jacarta-300">
-                    {formData.image ? `File selected: ${formData.image.name}` : "Choose file"}
+                    {formData.image ? `File selected: ${formData.image}` : "Choose file"}
                   </label>
                 </div>
               </div>
@@ -244,7 +266,7 @@ const Edit = () => {
               {/* Game */}
               <div className="mb-6">
                 <label htmlFor="game" className="font-display text-jacarta-700 mb-2 block dark:text-white">
-                  Choose Game
+                  Choose A Game
                 </label>
                 <select
                   id="game"
@@ -253,7 +275,7 @@ const Edit = () => {
                   onChange={handleChange}
                   className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
                 >
-                  <option value="">Select Game</option>
+                  <option value="">{formData.game}</option>
                   {gamesData.map((game) => (
                     <option key={game.id} value={game.id}>
                       {game.name}
@@ -279,7 +301,7 @@ const Edit = () => {
                     onChange={handleChange}
                     className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
                   >
-                    <option value="">Select Game Type</option>
+                    <option value="">{formData.game_type}</option>
                     {gameTypes.map((game) => (
                       <option key={game.id} value={game.name}>
                         {game.name}
@@ -302,7 +324,7 @@ const Edit = () => {
                     onChange={handleChange}
                     className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
                   >
-                    <option value="">Select Game Mode</option>
+                    <option value="">{formData.game_mode}</option>
                     {gameModes.map((game) => (
                       <option key={game.id} value={game.name}>
                         {game.name}
@@ -325,7 +347,7 @@ const Edit = () => {
                     onChange={handleChange}
                     className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
                   >
-                    <option value="">Select Game Format</option>
+                    <option value="">{formData.game_format}</option>
                     {gameFormats.map((game) => (
                       <option key={game.id} value={game.name}>
                         {game.name}
@@ -433,7 +455,7 @@ const Edit = () => {
                 type="submit"
                 className="bg-accent-lighter cursor-default rounded-full py-3 px-8 text-center font-semibold text-white transition-all"
               >
-                Create Tournament
+                Save Tournament
               </button>
             </form>
           </div>
