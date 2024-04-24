@@ -55,7 +55,7 @@ export const counterSlice = createSlice({
       state.buyModal = true;
       // Set the tournamentUuid in the state
       state.tournamentUuid = tournamentUuid;
-
+      
     },
     buyModalHide: (state) => {
       state.buyModal = false;

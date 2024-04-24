@@ -17,7 +17,7 @@
 	import { buyModalHide, buyModalShow } from '../../redux/counterSlice';
 
 	const Item = () => {
-		const [tournaments, setTournaments] = useState([]);	
+		const [tournaments, setTournaments] = useState([]);
 		const [joinedTournaments, setJoinedTournaments] = useState([]);
 		const router = useRouter();
 		const uuid = router.query.item;
@@ -57,8 +57,6 @@
 				fetchUserUuid();
 			}
 		}, );
-
-
 
 		useEffect(() => {
 			const accessToken = localStorage.getItem("accessToken");
@@ -193,9 +191,7 @@
 
 		// check if current user is Host
 		const isHost = tournament?.host?.uuid === userUuid;
-		console.log("isHost", isHost);
-		console.log("host uuid", tournament?.host?.uuid);
-		console.log("user uuid", userUuid);
+
 
 		const tournamentUuid = tournament.uuid;
 
@@ -204,7 +200,7 @@
 			const accessToken = localStorage.getItem("accessToken");
 			try {
 				// Perform delete request using Axios
-				const response = await fetch(`${backendUrl}/api/tournaments/leave/${tournamentUuid}/`, {
+				const response = await fetch(`${backendUrl}/api/tournaments/edit/${tournamentUuid}/`, {
 					method: "DELETE",
 					headers: {
 						Authorization: `Bearer ${accessToken}`,

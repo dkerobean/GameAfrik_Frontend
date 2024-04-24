@@ -27,6 +27,8 @@ const Edit = () => {
     number_of_participants: "",
     start_date: "",
     end_date: "",
+    image: "",
+    game_id: "",
   });
 
   useEffect(() => {
@@ -106,16 +108,16 @@ const Edit = () => {
         );
         const tournamentData = response.data;
 
+        console.log("here is the tournament data", tournamentData);
+
         // Convert ISO 8601 format to datetime-local format
       const startDate = tournamentData.start_date.replace("Z", "");
       const endDate = tournamentData.end_date.replace("Z", "");
-
-       console.log(tournamentData)
         // Set form data with fetched tournament data
         setFormData({
           name: tournamentData.name,
           rules: tournamentData.rules,
-          game: tournamentData.game.name,
+          game: tournamentData.game.id,
           game_type: tournamentData.game_type,
           game_mode: tournamentData.game_mode,
           game_format: tournamentData.game_format,
@@ -124,7 +126,8 @@ const Edit = () => {
           number_of_participants: tournamentData.number_of_participants,
           start_date: startDate,
           end_date: endDate,
-          image: tournamentData.image
+          image: tournamentData.image,
+          game_id: tournamentData.game.id,
         });
       } catch (error) {
         console.error("Error fetching tournament data:", error);
@@ -141,15 +144,23 @@ const Edit = () => {
   };
 
   const handleFileChange = (files) => {
-  const file = files[0];
-  if (file instanceof File) {
-    setFormData({
-      ...formData,
-      image: file,
-    });
-  }
+    const file = files[0];
+    if (file instanceof File) {
+      // If a file is uploaded, update the image field with the new file object
+      setFormData({
+        ...formData,
+        image: file,
+      });
+    } else {
+      // If no file is uploaded, keep the existing image value unchanged
+      setFormData({
+        ...formData,
+        image: tournamentData.image,
+      });
+    }
+  };
 
-};
+  console.log("here is the form data", formData)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -163,7 +174,7 @@ const Edit = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         }
-      );
+      )
 
       if (response.status === 200) {
         toast.success("Tournament updated successfully");
@@ -271,7 +282,7 @@ const Edit = () => {
                 <select
                   id="game"
                   name="game"
-                  value={formData.game}
+                  value={formData.game_id}
                   onChange={handleChange}
                   className="dark:bg-jacarta-700 border-jacarta-100 hover:ring-accent/10 focus:ring-accent dark:border-jacarta-600 dark:placeholder:text-jacarta-300 w-full rounded-lg py-3 px-3 hover:ring-2 dark:text-white"
                 >
