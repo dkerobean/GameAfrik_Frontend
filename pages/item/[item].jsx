@@ -15,6 +15,7 @@
 	import "react-toastify/dist/ReactToastify.css";
 	import {BuyModal} from '../../components/modal/buyModal';
 	import { buyModalHide, buyModalShow } from '../../redux/counterSlice';
+	import axios from 'axios';
 
 	const Item = () => {
 		const [tournaments, setTournaments] = useState([]);
@@ -197,30 +198,34 @@
 
 		// Function to handle delete action
 		const handleDelete = async () => {
-			const accessToken = localStorage.getItem("accessToken");
-			try {
-				// Perform delete request using Axios
-				const response = await fetch(`${backendUrl}/api/tournaments/edit/${tournamentUuid}/`, {
-					method: "DELETE",
+		const accessToken = localStorage.getItem("accessToken");
+		try {
+			const response = await axios.delete(
+				`${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournament/${tournament.uuid}/`,
+				{
 					headers: {
 						Authorization: `Bearer ${accessToken}`,
 					},
-				});
-
-				if (response.ok) {
-					// Hide modal on success
-					dispatch(buyModalHide());
-					// Show success toast
-					toast.success('Tournament deleted successfully');
-				} else {
-					throw new Error('Failed to delete tournament');
 				}
-			} catch (error) {
-				console.error('Error deleting tournament:', error);
-				// Show error toast
+			);
+
+			if (response.status === 204) {
+				// Tournament successfully deleted
+				toast.success('Tournament deleted successfully');
+
+				// Delay the redirection for 2 seconds
+				setTimeout(() => {
+					router.push('/user/avatar_6');
+				}, 2000);
+			} else {
+				// Handle other status codes if needed
 				toast.error('Failed to delete tournament');
 			}
-		};
+		} catch (error) {
+			console.error('Error deleting tournament:', error);
+			toast.error('Failed to delete tournament');
+		}
+	};
 
 		const handleBuyModalShow = () => {
 		// Dispatch the buyModalShow action creator with the tournamentUuid as payload
