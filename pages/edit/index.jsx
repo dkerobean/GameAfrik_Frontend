@@ -31,6 +31,7 @@ const Edit = () => {
     game_id: "",
   });
 
+
   useEffect(() => {
     // Fetch access token from local storage
     const storedAccessToken = localStorage.getItem("accessToken");
@@ -133,8 +134,10 @@ const Edit = () => {
         console.error("Error fetching tournament data:", error);
       }
     };
+
     fetchTournamentData();
-  }, []);
+  }, [tournamentUuid]); //
+
 
   const handleChange = (e) => {
     setFormData({
@@ -142,6 +145,7 @@ const Edit = () => {
       [e.target.name]: e.target.value,
     });
   };
+
 
   const handleFileChange = (files) => {
     const file = files[0];
@@ -163,29 +167,38 @@ const Edit = () => {
   console.log("here is the form data", formData)
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournament/edit/${tournamentUuid}/`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
+  // Create a new FormData instance
+  const data = new FormData();
 
-      if (response.status === 200) {
-        toast.success("Tournament updated successfully");
-      } else {
-        toast.error("Error updating tournament");
+  // Append all form fields to the FormData instance
+  Object.keys(formData).forEach((key) => {
+    data.append(key, formData[key]);
+  });
+
+  try {
+    const response = await axios.put(
+      `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournament/edit/${tournamentUuid}/`,
+      data, // send FormData instance
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data', // add this line
+        },
       }
-    } catch (error) {
-      console.error("Error updating tournament:", error);
+    );
+
+    if (response.status === 200) {
+      toast.success("Tournament updated successfully");
+    } else {
       toast.error("Error updating tournament");
     }
-  };
+  } catch (error) {
+    console.error("Error updating tournament:", error);
+    toast.error("Error updating tournament");
+  }
+};
 
   return (
     <div>
