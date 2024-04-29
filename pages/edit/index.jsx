@@ -27,7 +27,6 @@ const Edit = () => {
     number_of_participants: "",
     start_date: "",
     end_date: "",
-    image: "",
     game_id: "",
   });
 
@@ -168,13 +167,18 @@ const Edit = () => {
   console.log("here is the form data", formData)
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    console.log(formData)
+    e.preventDefault();
 
   // Create a new FormData instance
   const data = new FormData();
 
   // Append all form fields to the FormData instance
   Object.keys(formData).forEach((key) => {
+    // If the key is 'image' and the value is a string, skip appending it
+    if (key === 'image' && typeof formData[key] === 'string') {
+      return;
+    }
     data.append(key, formData[key]);
   });
 
