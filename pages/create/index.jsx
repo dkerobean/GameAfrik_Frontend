@@ -61,7 +61,7 @@ const Create = () => {
     const fetchGameModes = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/tournament/game_modes/"
+         `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournament/game_modes/`
         );
         setGameModes(response.data);
       } catch (error) {
@@ -72,7 +72,7 @@ const Create = () => {
     const fetchGameTypes = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/tournament/game_types/"
+          `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournament/game_types/`
         );
         setGameTypes(response.data);
       } catch (error) {
@@ -83,7 +83,7 @@ const Create = () => {
     const fetchGameFormats = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/tournament/game_formats/"
+          `${process.env.NEXT_PUBLIC_APP_BACKEND_URL}/api/tournament/game_formats/`
         );
         setGameFormats(response.data);
       } catch (error) {
