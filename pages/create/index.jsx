@@ -143,6 +143,10 @@ const handleSubmit = async (e) => {
 
     if (response.status === 201) {
       toast.success(`Tournament created successfully`);
+      // Delay the redirection for 2 seconds
+      setTimeout(() => {
+          router.push('/user/avatar_6');
+      }, 2000);
     } else {
       toast.error("Error creating tournament");
     }
