@@ -114,6 +114,7 @@ const Edit = () => {
         // Convert ISO 8601 format to datetime-local format
       const startDate = tournamentData.start_date.replace("Z", "");
       const endDate = tournamentData.end_date.replace("Z", "");
+
         // Set form data with fetched tournament data
         setFormData({
           name: tournamentData.name,
@@ -191,6 +192,10 @@ const Edit = () => {
 
     if (response.status === 200) {
       toast.success("Tournament updated successfully");
+      // Delay the redirection for 2 seconds
+      setTimeout(() => {
+          router.push('/user/avatar_6');
+      }, 2000);
     } else {
       toast.error("Error updating tournament");
     }
